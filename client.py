@@ -2,6 +2,7 @@ from datetime import timedelta
 import discord
 import logging
 import os
+import json
 
 from discord.ext import commands
 from utils import Logger
@@ -16,6 +17,7 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 BESTGUILD = os.getenv('BEST_GUILD')
+DEBUGCHANNEL = 851344906185343016
 
 customlogger = Logger('client.py')
 
@@ -32,6 +34,12 @@ async def on_ready():
 		f'{client.user} is connected to the following guild:\n'
 		f'{guild.name} (id: {guild.id})'
 	)
+
+
+@client.event
+async def on_command_error(ctx, error):
+	channel = client.get_channel(DEBUGCHANNEL)
+	await channel.send('```{0}```'.format(error))
 
 
 # @client.event
@@ -63,13 +71,26 @@ async def mute(ctx, member: discord.Member, *, reason=None):
 
 	await ctx.send('{0} was muted.'.format(member.mention))
 	await member.add_roles(muterole, reason=reason)
-		
 
-@client.event
-async def on_error(event, *args, **kwargs):
-	with open('err.log', 'a') as f:
-		if event == 'on_message':
-			customlogger.log_alert('Error logged to err.log')
-			f.write(f'Unhandled message: {args[0]}\n')
-		else:
-			raise Exception
+
+@client.command(description='Pings the bot.')
+async def ping(ctx):
+	await ctx.send('bitch')
+
+
+@client.command(description='Adds an automatic reply. \nSyntax-> !addreply <sentence>, <reply>')
+async def addreply(ctx, *args):
+	sentence, reply = args.split(',')
+	sentence, reply = sentence.strip().lower(), reply.strip().lower()
+	with open('data/replies.json', 'r') as f:
+		replies = json.load(f)
+
+	replies[sentence] = reply
+
+	with open('data/replies.json', 'w') as f:
+		json.dump(replies, f)
+
+	await ctx.send('Reply added.')
+
+	# THIS DOES NOT WORK 
+		
