@@ -85,11 +85,11 @@ async def addreply(ctx, *args):
 
 	sentence, reply = string.split('|')
 
-	sentence, reply = sentence.strip().lower(), reply.strip().lower()
+	sentence, reply = sentence.strip().lower(), reply.strip()
 	with open('data/replies.json', 'r') as f:
 		replies = json.load(f)
 
-	replies[sentence] = reply
+	replies[sentence] = (reply, sentence.endswith('%r'))
 
 	with open('data/replies.json', 'w') as f:
 		json.dump(replies, f, indent=4)

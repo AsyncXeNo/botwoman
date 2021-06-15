@@ -21,12 +21,15 @@ class Nae(commands.Cog):
         with open('data/message_logs.json', 'w') as f:
             json.dump(message_logs, f, indent=4)
         
-        if message.author == self.client:
+        if message.author == self.client.user:
             return
         
         for entry in self.replies:
+            if self.replies[entry][1]:
+                if message.content.lower().startswith(entry[:-2]):
+                    await message.channel.send(self.replies[entry][0])
             if message.content.lower() == entry:
-                await message.channel.send(self.replies[entry])
+                await message.channel.send(self.replies[entry][0])
 
     
 
