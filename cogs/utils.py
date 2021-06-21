@@ -1,4 +1,5 @@
 import discord
+import sys
 from discord.ext import commands
 
 
@@ -7,8 +8,9 @@ class Utils(commands.Cog):
         self.client = client
 
     @commands.command()
-    async def testing(self, ctx):
-        await ctx.send('works.')
+    async def selfdestruct(self, ctx):
+        await ctx.send('I\'m done with life.')
+        sys.exit()
 
 
 def setup(client):
