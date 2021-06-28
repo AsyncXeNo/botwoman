@@ -1,5 +1,6 @@
 import discord
 import json
+from discord import embeds
 from discord.ext import commands
 
 
@@ -16,7 +17,7 @@ class Nae(commands.Cog):
         with open('data/message_logs.json', 'r') as f:
             message_logs = json.load(f)
 
-        message_logs.append({'author': message.author.name, 'message': message.content, 'channel': message.channel.name, 'atachments': [attachment.url for attachment in message.attachments], 'datetime': message.created_at.__str__()}) 
+        message_logs.append({'author': message.author.name, 'message': message.content, 'channel': message.channel.name, 'atachments': [attachment.url for attachment in message.attachments], "embeds": [embed.url for embed in message.embeds], 'datetime': message.created_at.__str__()}) 
 
         with open('data/message_logs.json', 'w') as f:
             json.dump(message_logs, f, indent=4)
