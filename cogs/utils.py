@@ -2,6 +2,8 @@ import discord
 import sys
 from discord.ext import commands
 
+from better_profanity import profanity
+
 import wikipedia
 
 wikipedia.set_lang("en")
@@ -13,7 +15,30 @@ class Utils(commands.Cog):
 
     @commands.command(description="Searches wikipedia for the given query.")
     async def wiki(self, ctx, *args):
-        query = " ".join(args)
+        query = " ".join(args).lower()
+
+        if query.lower() == "pizza":
+            await ctx.send("Did you mean retard (Y/N)")
+
+            def check(msg):
+                return msg.author == ctx.author and msg.channel == ctx.channel
+
+            msg = await self.client.wait_for("message", check=check)
+
+            if not (msg.content.lower() in ["y", "n"]):
+                await ctx.send("That was not an option (?)")
+                return
+
+            if msg.content.lower() == "y":
+                query = "intellectual disability"
+            else:
+                query = "pizza"
+
+        if profanity.contains_profanity(query):
+            if not ctx.channel.is_nsfw():
+                await ctx.send("You can only search that in NSFW channels.")
+                return
+
         try:
             results = wikipedia.page(query, auto_suggest=False, redirect=True)
         except wikipedia.exceptions.DisambiguationError as e:
@@ -31,7 +56,7 @@ class Utils(commands.Cog):
             description=response
         )
 
-        embed.set_image(url=results.images[1])
+        embed.set_image(url=results.images[3])
 
         await ctx.send(embed=embed)
 
