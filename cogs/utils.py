@@ -17,6 +17,15 @@ class Utils(commands.Cog):
     async def wiki(self, ctx, *args):
         query = " ".join(args).lower()
 
+        custom_nsfw = [
+            "gräfenberg spot",
+            "shotacon",
+            "shota",
+            "male genitalia",
+            "female genitalia",
+            "cyclopia"
+        ]
+
         if query.lower() == "pizza":
             await ctx.send("Did you mean retard (Y/N)")
 
@@ -34,7 +43,7 @@ class Utils(commands.Cog):
             else:
                 query = "pizza"
 
-        if profanity.contains_profanity(query):
+        if profanity.contains_profanity(query) or query.lower() in custom_nsfw:
             if not ctx.channel.is_nsfw():
                 await ctx.send("You can only search that in NSFW channels.")
                 return
@@ -56,7 +65,16 @@ class Utils(commands.Cog):
             description=response
         )
 
-        embed.set_image(url=results.images[3])
+        image_index = None
+
+        for image in results.images:
+            if "thumb" in image.lower() or "cover" in image.lower() or "main" in image.lower():
+                image_index = results.images.index(image)
+
+        if image_index == None:
+            image_index = 3 if len(results.images) >= 4 else len(results.images) -1
+            
+        embed.set_image(url=results.images[image_index])
 
         await ctx.send(embed=embed)
 

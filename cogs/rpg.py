@@ -12,12 +12,13 @@ class RPG(commands.Cog):
 		self.client = client
 
 		self.players = []
-		self.friends = Friends()
+		self.friends = []
 
 		self.classes = ["fighter", "mage", "assassin", "healer"]
 		self.playerfilepath = "data/player_info.pickle"
 		self.idsfilepath = "data/generated_ids.json"
 		self.load_players()
+		self.load_friends()
 
 
 	# COMMANDS
@@ -28,16 +29,28 @@ class RPG(commands.Cog):
 		self.dungeon = [[[] for _ in len(self.players)] for _ in len(self.players)]
 
 	
+
+	@commands.command(description="purges friends list and all registered players")
+	@commands.is_owner()
+	async def purge(self, ctx):
+		self.friends = []
+		self.players = []
+		self.save_players()
+		self.save_friends()
+
+		await ctx.send("purged.")
+
+	
 	@commands.command(description="Show registered players")
 	@commands.is_owner()
-	async def show_players(self, ctx):
+	async def showplayers(self, ctx):
 
 		players = ""
 
 		for player in self.players:
 			user = self.client.get_user(player.user_id)
 			if user:
-				players += f"{user.name}#{user.discriminator}\n"
+				players += f"{user.name}#{user.discriminator}  [{user.id}]\n"
 			else:
 				await ctx.send(f"Cannot find user with id {player.user_id}")
 		
@@ -46,6 +59,19 @@ class RPG(commands.Cog):
 		else:
 			await ctx.send("No players regsitered.")
 
+	
+	@commands.command(description="Show list of friends")
+	@commands.is_owner()
+	async def showfriends(self, ctx):
+		friends = ""
+		for pair in self.friends:
+			friends += f"{self.client.get_user(pair[0]).name}  <->  {self.client.get_user(pair[1]).name}\n"
+
+		if friends == "":
+			await ctx.send("No friends")
+			return
+
+		await ctx.send(friends)
 
 	@commands.command(description="Register yourself in the RPG.")
 	async def register(self, ctx):
@@ -112,15 +138,111 @@ class RPG(commands.Cog):
 		await ctx.send("Class changed successfully.")
 
 
-	
-	
+	@commands.command(description="Send a friend request to another player.")
+	async def friend(self, ctx, member: discord.Member):
+		player_exists = False
+		author_player = None
+		player_to_add = None
+		user_to_add = None
+		user_id = member.id
+
+		for player in self.players:
+			user = self.client.get_user(player.user_id)
+			if user.id == user_id:
+				player_exists = True
+				player_to_add = player
+				user_to_add = user
+
+			if user.id == ctx.author.id:
+				author_player = player
+
+		if not author_player:
+			await ctx.send("Seems like you haven't even registered. You can't send friend request to another players if you aren't registered.")
+			return
+
+		if not player_exists:
+			await ctx.send(f"{ctx.author.mention} the person you mentioned hasn't registered yet.")
+			return
+
+		for pair in self.friends:
+			if (author_player.user_id == pair[0] and player_to_add.user_id == pair[1]) or (author_player.user_id == pair[1] and player_to_add.user_id == pair[0]):
+				await ctx.send(f"You are already friends with {user_to_add.name}.")
+				return
+
+		if author_player.user_id == player_to_add.user_id:
+			await ctx.send("You can't be friends with yourself dumbass")
+			return
+
+		def check(msg):
+			return msg.channel == ctx.channel and msg.author == user_to_add
+
+		msg = None
+		
+		for i in range(3):
+
+			await ctx.send(f"{user_to_add.mention} {ctx.author.name} would like to be friends with you. Do you wanna accept? (Y/N)")
+
+			msg = await self.client.wait_for("message", check=check)
+
+			if not msg.content.lower() in ["y", "n"]:
+				await ctx.send("That's not even an option...")
+				if i == 2:
+					await ctx.send("You're retarded I'm done with you.")
+					return
+
+			else:
+				break
+
+		for pair in self.friends:
+			if (author_player.user_id == pair[0] and player_to_add.user_id == pair[1]) or (author_player.user_id == pair[1] and player_to_add.user_id == pair[0]):
+				await ctx.send(f"You are already friends with {user_to_add.name}.")
+				return
+
+		if msg.content.lower() == "n":
+			
+			await ctx.send(f"{ctx.author.mention} {user_to_add.name} does not want to be friends with you. Cry.")
+
+		elif msg.content.lower() == "y":
+			await ctx.send(f"{ctx.author.mention} is now friends with {user_to_add.mention}!")
+			self.save_friend_pair(author_player.user_id, player_to_add.user_id)
+		
+
+	@commands.command(description="Unfriend another player.")
+	async def unfriend(self, ctx, member: discord.Member):
+		self_id = ctx.author.id
+		unfriend_id = member.id
+		 
+		friends = False
+
+		for pair in self.friends:
+			if (self_id == pair[0] and unfriend_id == pair[1]) or (self_id == pair[1] and unfriend_id == pair[0]):
+				friends = True
+				self.friends.pop(self.friends.index(pair))
+
+		if not friends:
+			await ctx.send("You are not friends with this user anyway.")
+			return
+
+		await ctx.send(f"{ctx.author.mention} lost all connections with {member.mention}.")
+
 
 	# HELPER FUNCTIONS
+
+	def save_friend_pair(self, friend1, friend2):
+		self.friends.append((friend1, friend2,))
+		self.save_friends()
+
+	def save_friends(self):
+		with open("data/friends.json", "w") as f:
+			json.dump(self.friends, f, indent=4)
+
+	def load_friends(self):
+		with open("data/friends.json", "r") as f:
+			self.friends = json.load(f)
 
 	def save_player(self, user_id, character_class):
 		self.players.append(Player(user_id, character_class))
 		self.save_players()
-
 
 	def save_players(self):
 		with open(self.playerfilepath, "wb") as f:
@@ -149,18 +271,6 @@ class RPG(commands.Cog):
 			json.dump(generated, f, indent=4)
 
 		return gen
-		
-
-class Friends(object):
-	def __init__(self):
-		self.friends = [] # tuples of Player objects
-
-	def add_friends(self, player1, player2):
-		self.friends.append((player1, player2,))
-
-	def get_friends(self):
-		return self.friends
-
 
 class Player(object):
 	def __init__(self, user_id, character_class):

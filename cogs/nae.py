@@ -26,12 +26,22 @@ class Nae(commands.Cog):
             return
         
         for entry in self.replies:
-            if self.replies[entry][1]:
-                if message.content.lower().startswith(entry[:-2]):
+            if self.replies[entry][1] == "NONE":
+                if message.content.lower() == entry:
                     await message.channel.send(self.replies[entry][0])
-            if message.content.lower() == entry:
-                await message.channel.send(self.replies[entry][0])
+            
+            if self.replies[entry][1] == "START":
+                if message.content.lower().endswith(entry):
+                    await message.channel.send(self.replies[entry][0])
 
+
+            if self.replies[entry][1] == "END":
+                if message.content.lower().startswith(entry):
+                    await message.channel.send(self.replies[entry][0])
+
+            if self.replies[entry][1] == "MIDDLE":
+                if entry in message.content.lower():
+                    await message.channel.send(self.replies[entry][0])
     
 
 def setup(client):

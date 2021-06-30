@@ -80,33 +80,23 @@ async def ping(ctx):
 	await ctx.send('bitch')
 
 
-@client.command(description='Adds an automatic reply. \nSyntax-> !addreply <sentence> | <reply>')
-async def addreply(ctx, *args):
-	string = ' '.join(args)
-	customlogger.log_warning(string)
-
-	sentence, reply = string.split('|')
-
-	sentence, reply = sentence.strip().lower(), reply.strip()
-	with open('data/replies.json', 'r') as f:
-		replies = json.load(f)
-
-	replies[sentence] = (reply, sentence.endswith('%r'))
-
-	with open('data/replies.json', 'w') as f:
-		json.dump(replies, f, indent=4)
-
-	await ctx.send('Reply added.')
-
-
 @client.command(description="you do not need to know")
 @commands.is_owner()
 async def load(ctx, extension):
 	client.load_extension(f'cogs.{extension}')
+	await ctx.send("ok")
 
 
 @client.command(description="you do not need to know")
 @commands.is_owner()
 async def unload(ctx, extension):
 	client.unload_extension(f'cogs.{extension}')
-		
+	await ctx.send("ok")
+
+
+@client.command(description="you do not need to know")
+@commands.is_owner()
+async def reload(ctx, extension):
+	client.unload_extension(f'cogs.{extension}')
+	client.load_extension(f'cogs.{extension}')
+	await ctx.send("ok")
