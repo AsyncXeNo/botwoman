@@ -26,8 +26,19 @@ class RPG(commands.Cog):
 	@commands.command(description="Start RPG")
 	@commands.is_owner()
 	async def start(self, ctx):
-		self.dungeon = [[[] for _ in len(self.players)] for _ in len(self.players)]
+		room_range = range(len(self.players)) if len(self.players) >= 4 else 4
+		await ctx.send("Setting up the dungeon...")
+		self.dungeon = [[Room((col, row)) for row in range(room_range)] for col in range(room_range)]
+		await ctx.send("Assigning players to random rooms...")
+		for player in self.players:
+			coords = Vector2()
+			coords.x = self.dungeon.index(random.choice(self.dungeon))
+			coords.y = self.dungeon.index(random.choice(self.dungeon[coords.x]))
+			self.dungeon[coords.x][coords.y].add_player(player)
 
+		for row in self.dungeon:
+			for room in row:
+				await ctx.send(room.get_info())
 	
 
 	@commands.command(description="purges friends list and all registered players")
@@ -241,7 +252,7 @@ class RPG(commands.Cog):
 			self.friends = json.load(f)
 
 	def save_player(self, user_id, character_class):
-		self.players.append(Player(user_id, character_class))
+		self.players.append(Player(user_id, character_class, self.client.get_user(user_id).name))
 		self.save_players()
 
 	def save_players(self):
@@ -273,12 +284,39 @@ class RPG(commands.Cog):
 		return gen
 
 class Player(object):
-	def __init__(self, user_id, character_class):
+	def __init__(self, user_id, character_class, name):
 		self.user_id = user_id
 		self.character_class = character_class
+		self.name = name
 
 	def __str__(self):
-		return f"Id- {self.user_id}\nClass- {self.character_class}"
+		return f"Name- {self.name}\nId- {self.user_id}\nClass- {self.character_class}"
+
+
+class Room(object):
+	def __init__(self, pos):
+		self.pos = pos
+		self.players = []
+		self.enemies = []
+		self.events = []
+		self.chests = []
+
+	def add_player(self, player):
+		self.players.append(player)
+
+	def get_info(self):
+		response = f"{self.pos}\n"
+		for player in self.players:
+			response += player.__str__()
+
+
+class Vector2(object):
+	def __init__(self, x=None, y=None):
+		self.x = x
+		self.y = y
+
+	def get_coords(self):
+		return (x, y,)
 
 	
 def setup(client):
