@@ -32,7 +32,10 @@ class Utils(commands.Cog):
             "shota",
             "male genitalia",
             "female genitalia",
-            "cyclopia"
+            "cyclopia",
+            "rule34",
+            "rule 34",
+            "nsfw"
         ]
 
         self.imgs_path = "data/imgs/"
@@ -60,6 +63,11 @@ class Utils(commands.Cog):
             else:
                 query = "pizza"
 
+        for arg in args:
+            if arg in self.custom_nsfw:
+                if not ctx.channel.is_nsfw():
+                    await ctx.send("You can only search that in NSFW channels.")
+                    return
         if profanity.contains_profanity(query) or query.lower() in self.custom_nsfw:
             if not ctx.channel.is_nsfw():
                 await ctx.send("You can only search that in NSFW channels.")
@@ -100,23 +108,12 @@ class Utils(commands.Cog):
     async def image(self, ctx, *args):
         query = " ".join(args).lower()
 
-        if query.lower() == "pizza":
-            await ctx.send("Did you mean retard (Y/N)")
-
-            def check(msg):
-                return msg.author == ctx.author and msg.channel == ctx.channel
-
-            msg = await self.client.wait_for("message", check=check)
-
-            if not (msg.content.lower() in ["y", "n"]):
-                await ctx.send("That was not an option (?)")
-                return
-
-            if msg.content.lower() == "y":
-                query = "intellectual disability"
-            else:
-                query = "pizza"
-
+        for arg in args:
+            if arg in self.custom_nsfw:
+                if not ctx.channel.is_nsfw():
+                    await ctx.send("You can only search that in NSFW channels.")
+                    return
+                    
         if profanity.contains_profanity(query) or query.lower() in self.custom_nsfw:
             if not ctx.channel.is_nsfw():
                 await ctx.send("You can only search that in NSFW channels.")
@@ -125,10 +122,10 @@ class Utils(commands.Cog):
         search_params = {
             'q': query,
             'num': 1,
-            'safe': 'medium',
+            'safe': 'off',
             'fileType': 'jpg',
             'imgType': 'photo',
-            'imgSize': 'imgSizeUndefined',
+            'imgSize': 'MEDIUM',
             'imgDominantColor': 'imgDominantColorUndefined',
             'rights': 'rightsUndefined'
         }
@@ -136,10 +133,12 @@ class Utils(commands.Cog):
         filename = f'{query.replace(" ", "_")}'
         self.gis.search(search_params=search_params, path_to_dir=self.imgs_path, custom_image_name=filename)
 
-        with open(f"{self.imgs_path}{filename}.jpg", "rb") as f:
+        image_path = f"{self.imgs_path}{filename}.jpg"
+
+        with open(image_path, "rb") as f:
             await ctx.send(file=discord.File(f))
 
-        os.remove(f"{self.imgs_path}{filename}.jpg")
+        os.remove(image_path)
 
 
 def setup(client):
