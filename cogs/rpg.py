@@ -150,6 +150,8 @@ class RPG(commands.Cog):
 			await ctx.send("Register first using !register.")
 			return
 		
+		options = [option.title() for option in Player.PLAYERCLASSES]
+		options_str = " / ".join(options)
 		await ctx.send("Change your class. (Mage / Fighter / Assassin / Healer)")
 
 		def check(msg):
@@ -157,12 +159,12 @@ class RPG(commands.Cog):
 
 		msg = await self.client.wait_for("message", check=check)
 
-		if not (msg.content.lower() in self.classes):
+		if not (msg.content.upper() in Player.PLAYERCLASSES):
 			await ctx.send("What are you pizza? That was not even an option wtf?")
 			return
 
 		else:
-			new_class = self.classes.index(msg.content.lower())
+			new_class = Player.PLAYERCLASSES.index(msg.content.upper())
 
 		for player in self.players:
 			if player.user_id == user_id:
