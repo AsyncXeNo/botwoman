@@ -18,7 +18,6 @@ class RPG(commands.Cog):
 		self.players = []
 		self.friends = []
 
-		self.classes = ["fighter", "mage", "assassin", "healer"]
 		self.playerfilepath = "data/player_info.pickle"
 		self.idsfilepath = "data/generated_ids.json"
 		self.load_players()
@@ -112,19 +111,21 @@ class RPG(commands.Cog):
 				await ctx.send("You are already registered.")
 				return
 
-		await ctx.send("Choose your class. (Mage / Fighter / Assassin / Healer)")
+		options = [option.title() for option in Player.PLAYERCLASSES]
+		options_str = " / ".join(options)
+		await ctx.send(f"Choose your class. ({options_str})")
 
 		def check(msg):
 			return msg.author == ctx.author and msg.channel == ctx.channel
 
 		msg = await self.client.wait_for("message", check=check)
 
-		if not (msg.content.lower() in self.classes):
+		if not (msg.content.upper() in Player.PLAYERCLASSES):
 			await ctx.send("What are you pizza? That was not even an option wtf?")
 			return
 
 		else:
-			character_class = self.classes.index(msg.content.lower())
+			character_class = Player.PLAYERCLASSES.index(msg.content.upper())
 
 		self.save_player(user_id, character_class)
 

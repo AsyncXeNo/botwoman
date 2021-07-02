@@ -1,4 +1,5 @@
 import discord
+import random
 from discord.ext import commands
 
 from rpg_entities import Pizza
@@ -26,8 +27,15 @@ class RPG_GAME(commands.Cog):
 	@commands.command(description="TEST")
 	@commands.is_owner()
 	async def test(self, ctx):
-		pizza = Pizza("LARGE")
+		types = {
+			0: "SMALL",
+			1: "MEDIUM",
+			2: "LARGE",
+			3: "THE EMBODIMENT OF DEGENERACY"
+		}
+		pizza = Pizza(types[random.randint(0, 3)])
 		await ctx.send(pizza.get_info())
+		await pizza.attack(ctx, 0)
 
 
 def setup(client):
