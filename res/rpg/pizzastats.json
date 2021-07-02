@@ -1,0 +1,38 @@
+{
+	"SMALL": {
+		"maxhp": [91, 129],
+		"physical": [19, 34],
+		"magic": [19, 34],
+		"defense": [0, 4],
+		"magic_def": [0, 4],
+		"agility": [75, 100],
+		"type": [0, 2]
+	},
+	"MEDIUM": {
+		"maxhp": [548, 764],
+		"physical": [79, 139],
+		"magic": [79, 139],
+		"defense": [13, 37],
+		"magic_def": [13, 37],
+		"agility": [41, 70],
+		"type": [0, 2]
+	},
+	"LARGE": {
+		"maxhp": [1277, 1674],
+		"physical": [223, 457],
+		"magic": [223, 457],
+		"defense": [69, 122],
+		"magic_def": [69, 122],
+		"agility": [0, 40],
+		"type": [0, 2]
+	},
+	"THE EMBODIMENT OF DEGENERACY": {
+		"maxhp": [10000, 10000],
+		"physical": [1000, 1000],
+		"magic": [1000, 1000],
+		"defense": [1000, 1000],
+		"magic_def": [1000, 1000],
+		"agility": [0, 0],
+		"type": [2, 2]
+	}
+}

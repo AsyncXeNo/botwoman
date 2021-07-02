@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 
+from rpg_entities import Pizza
+
 
 class RPG_GAME(commands.Cog):
 	def __init__(self, client):
@@ -19,6 +21,13 @@ class RPG_GAME(commands.Cog):
 	# HELPER FUNCTIONS
 	def validate(self):
 		return self.client.get_cog("RPG").game
+
+
+	@commands.command(description="TEST")
+	@commands.is_owner()
+	async def test(self, ctx):
+		pizza = Pizza("LARGE")
+		await ctx.send(pizza.get_info())
 
 
 def setup(client):
