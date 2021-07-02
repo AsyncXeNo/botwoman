@@ -77,7 +77,7 @@ async def mute(ctx, member: discord.Member, *, reason=None):
 
 @client.command(description='Pings the bot.')
 async def ping(ctx):
-	await ctx.send('bitch')
+	await ctx.send(f"{int(client.latency*1000)} ms")
 
 
 @client.command(description="you do not need to know")

@@ -6,6 +6,8 @@ import pickle
 from discord.ext import commands
 from discord.utils import get
 
+from rpg_entities import *
+
 
 class RPG(commands.Cog):
 	def __init__(self, client):
@@ -98,6 +100,11 @@ class RPG(commands.Cog):
 
 	@commands.command(description="Register yourself in the RPG.")
 	async def register(self, ctx):
+
+		if self.game:
+			await ctx.send("A game is currently in progress!")
+			return
+
 		user_id = ctx.author.id
 
 		for player in self.players:
@@ -126,6 +133,10 @@ class RPG(commands.Cog):
 
 	@commands.command(description="Change your class")
 	async def changeclass(self, ctx):
+		if self.game:
+			await ctx.send("A game is currently in progress!")
+			return
+
 		user_id = ctx.author.id
 
 		registered = False
@@ -163,6 +174,10 @@ class RPG(commands.Cog):
 
 	@commands.command(description="Send a friend request to another player.")
 	async def friend(self, ctx, member: discord.Member):
+		if self.game:
+			await ctx.send("A game is currently in progress!")
+			return
+
 		player_exists = False
 		author_player = None
 		player_to_add = None
@@ -232,6 +247,10 @@ class RPG(commands.Cog):
 
 	@commands.command(description="Unfriend another player.")
 	async def unfriend(self, ctx, member: discord.Member):
+		if self.game:
+			await ctx.send("A game is currently in progress!")
+			return
+			
 		self_id = ctx.author.id
 		unfriend_id = member.id
 		 
@@ -295,23 +314,13 @@ class RPG(commands.Cog):
 
 		return gen
 
-class Player(object):
-	def __init__(self, user_id, character_class, name):
-		self.user_id = user_id
-		self.character_class = character_class
-		self.name = name
-
-	def __str__(self):
-		return f"Name- {self.name}\nId- {self.user_id}\nClass- {self.character_class}"
-
 
 class Room(object):
 	def __init__(self, pos):
 		self.pos = pos
 		self.players = []
 		self.enemies = []
-		self.events = []
-		self.chests = []
+		self.items = []
 
 	def add_player(self, player):
 		self.players.append(player)
@@ -322,7 +331,6 @@ class Room(object):
 			response += player.__str__()
 
 		return response
-
 
 class Vector2(object):
 	def __init__(self, x=None, y=None):
