@@ -2,22 +2,26 @@ import discord
 import sys
 from discord.ext import commands
 
+from google_images_search import GoogleImagesSearch
+
 from better_profanity import profanity
+
+from dotenv import load_dotenv
 
 import wikipedia
 
 wikipedia.set_lang("en")
 
+load_dotenv()
+
 
 class Utils(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.gis_api_key = os.getenv("GIS_API_KEY")
+        self.gis_project_cx = os.getenv("GIS_PROJECT_CX")
 
-    @commands.command(description="Searches wikipedia for the given query.")
-    async def wiki(self, ctx, *args):
-        query = " ".join(args).lower()
-
-        custom_nsfw = [
+        self.custom_nsfw = [
             "gräfenberg spot",
             "shotacon",
             "shota",
@@ -25,6 +29,12 @@ class Utils(commands.Cog):
             "female genitalia",
             "cyclopia"
         ]
+
+    @commands.command(description="Searches wikipedia for the given query.")
+    async def wiki(self, ctx, *args):
+        query = " ".join(args).lower()
+
+        
 
         if query.lower() == "pizza":
             await ctx.send("Did you mean retard (Y/N)")
@@ -43,7 +53,7 @@ class Utils(commands.Cog):
             else:
                 query = "pizza"
 
-        if profanity.contains_profanity(query) or query.lower() in custom_nsfw:
+        if profanity.contains_profanity(query) or query.lower() in self.custom_nsfw:
             if not ctx.channel.is_nsfw():
                 await ctx.send("You can only search that in NSFW channels.")
                 return
@@ -77,6 +87,34 @@ class Utils(commands.Cog):
         embed.set_image(url=results.images[image_index])
 
         await ctx.send(embed=embed)
+
+
+    @commands.command(description="Posts an image for a given query.")
+    async def image(ctx, *args):
+        query = " ".join(args).lower()
+
+        if query.lower() == "pizza":
+            await ctx.send("Did you mean retard (Y/N)")
+
+            def check(msg):
+                return msg.author == ctx.author and msg.channel == ctx.channel
+
+            msg = await self.client.wait_for("message", check=check)
+
+            if not (msg.content.lower() in ["y", "n"]):
+                await ctx.send("That was not an option (?)")
+                return
+
+            if msg.content.lower() == "y":
+                query = "intellectual disability"
+            else:
+                query = "pizza"
+
+        if profanity.contains_profanity(query) or query.lower() in self.custom_nsfw:
+            if not ctx.channel.is_nsfw():
+                await ctx.send("You can only search that in NSFW channels.")
+                return
+
 
 
 def setup(client):

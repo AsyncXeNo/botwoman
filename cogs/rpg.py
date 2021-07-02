@@ -11,6 +11,8 @@ class RPG(commands.Cog):
 	def __init__(self, client):
 		self.client = client
 
+		self.game = False
+
 		self.players = []
 		self.friends = []
 
@@ -33,12 +35,22 @@ class RPG(commands.Cog):
 		for player in self.players:
 			coords = Vector2()
 			coords.x = self.dungeon.index(random.choice(self.dungeon))
-			coords.y = self.dungeon.index(random.choice(self.dungeon[coords.x]))
+			coords.y = self.dungeon[coords.x].index(random.choice(self.dungeon[coords.x]))
 			self.dungeon[coords.x][coords.y].add_player(player)
 
 		for row in self.dungeon:
 			for room in row:
 				await ctx.send(room.get_info())
+
+		await ctx.send("All set!")
+		self.game = True
+
+
+	@commands.command(description="Stop the game (only meant to be used during development.)")
+	@commands.is_owner()
+	async def stop(self, ctx):
+		self.game = False
+		await ctx.send("Game has ended.")
 	
 
 	@commands.command(description="purges friends list and all registered players")
@@ -308,6 +320,8 @@ class Room(object):
 		response = f"{self.pos}\n"
 		for player in self.players:
 			response += player.__str__()
+
+		return response
 
 
 class Vector2(object):
