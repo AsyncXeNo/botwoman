@@ -1,4 +1,5 @@
 import discord
+import os
 import sys
 from discord.ext import commands
 
@@ -18,8 +19,12 @@ load_dotenv()
 class Utils(commands.Cog):
     def __init__(self, client):
         self.client = client
+
         self.gis_api_key = os.getenv("GIS_API_KEY")
         self.gis_project_cx = os.getenv("GIS_PROJECT_CX")
+
+        self.gis = GoogleImagesSearch(self.gis_api_key, self.gis_project_cx)
+
 
         self.custom_nsfw = [
             "gräfenberg spot",
@@ -29,6 +34,8 @@ class Utils(commands.Cog):
             "female genitalia",
             "cyclopia"
         ]
+
+        self.imgs_path = "data/imgs/"
 
     @commands.command(description="Searches wikipedia for the given query.")
     async def wiki(self, ctx, *args):
@@ -90,7 +97,7 @@ class Utils(commands.Cog):
 
 
     @commands.command(description="Posts an image for a given query.")
-    async def image(ctx, *args):
+    async def image(self, ctx, *args):
         query = " ".join(args).lower()
 
         if query.lower() == "pizza":
@@ -115,6 +122,24 @@ class Utils(commands.Cog):
                 await ctx.send("You can only search that in NSFW channels.")
                 return
 
+        search_params = {
+            'q': query,
+            'num': 1,
+            'safe': 'medium',
+            'fileType': 'jpg',
+            'imgType': 'photo',
+            'imgSize': 'imgSizeUndefined',
+            'imgDominantColor': 'imgDominantColorUndefined',
+            'rights': 'rightsUndefined'
+        }
+
+        filename = f'{query.replace(" ", "_")}'
+        self.gis.search(search_params=search_params, path_to_dir=self.imgs_path, custom_image_name=filename)
+
+        with open(f"{self.imgs_path}{filename}.jpg", "rb") as f:
+            await ctx.send(file=discord.File(f))
+
+        os.remove(f"{self.imgs_path}{filename}.jpg")
 
 
 def setup(client):
