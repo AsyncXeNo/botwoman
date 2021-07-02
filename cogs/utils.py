@@ -106,8 +106,8 @@ class Utils(commands.Cog):
 
     @commands.command(description="Posts an image for a given query.")
     async def image(self, ctx, *args):
+        
         query = " ".join(args).lower()
-
         for arg in args:
             if arg in self.custom_nsfw:
                 if not ctx.channel.is_nsfw():
