@@ -20,6 +20,7 @@ class RPG(commands.Cog):
 
 		self.playerfilepath = "data/player_info.pickle"
 		self.idsfilepath = "data/generated_ids.json"
+
 		self.load_players()
 		self.load_friends()
 
@@ -41,7 +42,9 @@ class RPG(commands.Cog):
 
 		for row in self.dungeon:
 			for room in row:
+				room.setup()
 				await ctx.send(room.get_info())
+
 
 		await ctx.send("All set!")
 		self.game = True
@@ -317,23 +320,6 @@ class RPG(commands.Cog):
 
 		return gen
 
-
-class Room(object):
-	def __init__(self, pos):
-		self.pos = pos
-		self.players = []
-		self.enemies = []
-		self.items = []
-
-	def add_player(self, player):
-		self.players.append(player)
-
-	def get_info(self):
-		response = f"{self.pos}\n"
-		for player in self.players:
-			response += player.__str__()
-
-		return response
 
 class Vector2(object):
 	def __init__(self, x=None, y=None):

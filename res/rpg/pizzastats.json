@@ -7,7 +7,7 @@
 		"magic_def": [0, 4],
 		"agility": [75, 100],
 		"type": [0, 2],
-		"exp": [20, 40]
+		"exp": [40, 60]
 	},
 	"MEDIUM": {
 		"maxhp": [548, 764],
@@ -17,7 +17,7 @@
 		"magic_def": [13, 37],
 		"agility": [41, 70],
 		"type": [0, 2],
-		"exp": [90, 150]
+		"exp": [150, 220]
 	},
 	"LARGE": {
 		"maxhp": [1277, 1674],
@@ -27,7 +27,7 @@
 		"magic_def": [69, 122],
 		"agility": [0, 40],
 		"type": [0, 2],
-		"exp": [250, 400]
+		"exp": [350, 550]
 	},
 	"THE EMBODIMENT OF DEGENERACY": {
 		"maxhp": [10000, 10000],
@@ -37,6 +37,6 @@
 		"magic_def": [1000, 1000],
 		"agility": [0, 0],
 		"type": [2, 2],
-		"exp": [1500, 2000]
+		"exp": [2000, 3000]
 	}
 }

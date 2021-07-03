@@ -29,6 +29,7 @@ class RPG_GAME(commands.Cog):
 	async def test(self, ctx):
 		pizza = Pizza(random.choice(Pizza.PIZZATYPES))
 		await ctx.send(pizza.get_info())
+		await pizza.death(ctx, self.client.get_cog("RPG").players)
 
 
 def setup(client):

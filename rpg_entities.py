@@ -30,7 +30,7 @@ class Entity(object):
 			self.physical = None
 
 	def get_stat_info(self):
-		return f"*MAX HP ->* `{self.maxhp}`\n*PHYSICAL DAMAGE ->* `{self.physical}`\n*MAGICAL DAMAGE ->* `{self.magic}`\n*PHYSICAL DEFENSE ->* `{self.defense}`\n*MAGIC DEFENSE ->* `{self.magic_def}`\n*AGILITY ->* `{self.agility}`"
+		return f"*MAX HP ->* `{self.maxhp}`\n*PHYSICAL DAMAGE ->* `{self.physical}`\n*MAGICAL DAMAGE ->* `{self.magic}`\n*PHYSICAL DEFENSE ->* `{self.defense}`\n*MAGIC DEFENSE ->* `{self.magic_def}`\n*AGILITY ->* `{self.agility}\n`"
 
 
 # ------------------------------------------------- PLAYERS --------------------------------------------------------
@@ -39,24 +39,22 @@ class Entity(object):
 class Player(Entity):
 	PLAYERCLASSES = ["MAGE", "FIGHTER", "ASSASSIN", "HEALER"]
 	PLAYERSTATES = ["NORMAL", "STUNNED"]
-	def __init__(self, user_id, character_class, name, client):										
+	def __init__(self, user_id, character_class, name):										
 		self.user_id = user_id
 		self.character_class = character_class
 		self.name = name
-
-		self.client = client
 
 		self.level = 1
 		self.exp = 0
 
 		self.attacks = {
-			"MAGE": 
-			"FIGHTER":
-			"ASSASSIN":
-			"HEALER":
+			"MAGE": [],
+			"FIGHTER": [],
+			"ASSASSIN": [],
+			"HEALER": []
 		}
 
-		self.default_state = "NORMAL":
+		self.default_state = "NORMAL"
 		self.state = self.default_state
 
 	def change_state(self, new_state):
@@ -65,12 +63,12 @@ class Player(Entity):
 
 		self.state = new_state.upper()
 
-	def attack(self, ctx, enemies):
+	async def attack(self, ctx, enemies):
 		if self.state.upper() == "STUNNED":
 			await ctx.send(f"**{self.name}** is currently ***{self.state}*** and cannot attack!")
 
 	async def give_exp(self, ctx, exp):
-		await ctx.send(f"{self.client.get_user(self.user_id).mention} you just gained {exp} experience points!")
+		await ctx.send(f"**{self.name}** you just gained {exp} experience points!")
 
 	def __str__(self):
 		return f"Name- {self.name}\nId- {self.user_id}\nClass- {self.character_class}"
@@ -133,7 +131,7 @@ class Pizza(Entity):
 		self.state = new_state.upper()
 
 	async def attack(self, ctx, players):
-		if self.state,upper() == "STUNNED":
+		if self.state.upper() == "STUNNED":
 			await ctx.send(f"{self.get_pizza_info()} is currently ***{self.state}*** and cannot attack!")
 			return
 
@@ -143,15 +141,15 @@ class Pizza(Entity):
 		await ctx.send(attack)
 
 	async def death(self, ctx, players):
-		players = [player.name for player in players]
+		players = [f"**{player.name}**" for player in players]
 		if len(players) > 2:
-			await ctx.send(f"{players[:-1].join(", ")} and {players[-1]} have slain {self.get_pizza_info()}! All of them gained {exp_gives//len(players)} exp points.")
+			await ctx.send(f"{(', ').join(players[:-1])} and {players[-1]} have slain {self.get_pizza_info()}! All of them gained {self.exp_gives//len(players)} exp points.")
 
 		elif len(players) == 2:
-			await ctx.send(f"{players.join(" and ")} have slain {self.get_pizza_info()}! Both of them gained {exp_gives//len(players)} experience points")
+			await ctx.send(f"{(' and ').join(players)} have slain {self.get_pizza_info()}! Both of them gained {self.exp_gives//len(players)} experience points.")
 
 		else:
-			await ctx.send(f"{players[0]}")
+			await ctx.send(f"{players[0]} has slain {self.get_pizza_info()}! They gained {self.exp_gives} experience points.")
 
 
 	# ATTACKS
@@ -199,3 +197,37 @@ class Pizza(Entity):
 	def i_can_totally_do_this(self, ctx, players):
 		# charges towards the player(s) looking incredibly cool. Trips on a banana peel and loses half remaining hp.
 		pass
+
+
+# --------------------------------------------------- ROOMS --------------------------------------------------------
+
+
+class Room(object):
+	def __init__(self, pos):
+		self.pos = pos
+		self.players = []
+		self.enemies = []
+		self.items = []
+
+	def add_player(self, player):
+		self.players.append(player)
+
+	def setup(self):
+		# CALLED AT THE VERY START WHILE SETTING UP THE DUNGEON AND EVERY TIME SOMEONE CHANGES ROOMS
+		if not len(self.players) == 0:
+			enemy_count = random.randint(1, len(self.players))
+			for enemy in range(enemy_count):
+				self.enemies.append(Pizza(random.choice(Pizza.PIZZATYPES)))
+
+	def get_info(self):
+		response = f"{'-'*50}\n{self.pos}\nPLAYERS:\n"
+		for player in self.players:
+			response += player.__str__()
+
+		response += "\nENEMIES:\n"
+		for enemy in self.enemies:
+			response += enemy.get_info()
+
+		response += f"{'-'*50}\n"
+
+		return response
