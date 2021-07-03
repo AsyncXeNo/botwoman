@@ -16,6 +16,7 @@ class RPG(commands.Cog):
 		self.game = False
 
 		self.players = []
+		self.parties = []
 		self.friends = []
 
 		self.playerfilepath = "data/player_info.pickle"
@@ -30,15 +31,32 @@ class RPG(commands.Cog):
 	@commands.command(description="Start RPG")
 	@commands.is_owner()
 	async def start(self, ctx):
+
+		if self.game:
+			await ctx.send("A game is already in progress!")
+			return
+
 		room_range = range(len(self.players)) if len(self.players) >= 4 else 4
 		await ctx.send("Setting up the dungeon...")
-		self.dungeon = [[Room((col, row)) for row in range(room_range)] for col in range(room_range)]
+		self.dungeon = [[Room((col, row), ctx, self.client) for row in range(room_range)] for col in range(room_range)]
 		await ctx.send("Assigning players to random rooms...")
+
 		for player in self.players:
-			coords = Vector2()
-			coords.x = self.dungeon.index(random.choice(self.dungeon))
-			coords.y = self.dungeon[coords.x].index(random.choice(self.dungeon[coords.x]))
-			self.dungeon[coords.x][coords.y].add_player(player)
+			if player.room == None:
+				coords = Vector2()
+				coords.y = self.dungeon.index(random.choice(self.dungeon))
+				coords.x = self.dungeon[coords.y].index(random.choice(self.dungeon[coords.y]))
+
+				party = self.get_friends(player.user_id)
+				print([friend.name for friend in party])
+				party.append(player)
+
+				print([friend.name for friend in party])
+	
+				for friend in party:
+					self.dungeon[coords.x][coords.y].add_player(friend)
+
+				self.parties.append(party)
 
 		for row in self.dungeon:
 			for room in row:
@@ -53,6 +71,10 @@ class RPG(commands.Cog):
 	@commands.command(description="Stop the game (only meant to be used during development.)")
 	@commands.is_owner()
 	async def stop(self, ctx):
+		if not self.game:
+			await ctx.send("No game in progress anyway...")
+			return 
+
 		self.game = False
 		await ctx.send("Game has ended.")
 	
@@ -66,6 +88,14 @@ class RPG(commands.Cog):
 		self.save_friends()
 
 		await ctx.send("purged.")
+
+
+	@commands.command(description="removes all records of AsyncXeno#7777")
+	@commands.is_owner()
+	async def purgeme(self, ctx):
+		self.players.remove(self.get_player_by_id(ctx.author.id))
+		self.save_players()
+		await ctx.send("ok")
 
 	
 	@commands.command(description="Show registered players")
@@ -99,6 +129,64 @@ class RPG(commands.Cog):
 			return
 
 		await ctx.send(friends)
+
+	@commands.command(description="Shows parties")
+	@commands.is_owner()
+	async def showparties(self, ctx):
+		response = ""
+		parties = [[friend.name for friend in party] for party in self.parties]
+		for party in parties:
+			response += f"PARTY -> {party}\n"
+
+		if response == "":
+			await ctx.send("No parties. Maybe you haven't started the game yet?")
+			return
+
+		await ctx.send(response)
+
+
+	@commands.command(description="Shows info about a player.")
+	async def info(self, ctx):
+		if not self.is_registered(ctx.author.id):
+			await ctx.send("You need to register first...")
+			return
+
+		response = "**Info-**\n"
+		response += self.get_player_by_id(ctx.author.id).get_info()
+		await ctx.send(response)
+
+
+	@commands.command(description="Shows a user's friends.")
+	async def myfriends(self, ctx):
+
+		if not self.is_registered(ctx.author.id):
+			await ctx.send("You are not registered for the RPG. Please register using !register in order to make friends.")
+			return
+
+		friends = ""
+		for pair in self.friends:
+			if pair[0] == ctx.author.id:
+				friends += f"{self.client.get_user(pair[1]).name}\n"
+			if pair[1] == ctx.author.id:
+				friends += f"{self.client.get_user(pair[0]).name}\n"
+
+		if friends != "":
+			await ctx.send(friends)
+
+		else:
+			await ctx.send("You have no friends. Just like real life.")
+
+
+	@commands.command(description="Make a party")
+	async def makeparty(self, ctx):
+		if self.game:
+			await ctx.send("A game is currently in progress!")
+			return
+
+		if not self.is_registered(ctx.author.id):
+			await ctx.send("You are not registered for the RPG. Please register using !register in order to make a party.")
+			return
+
 
 	@commands.command(description="Register yourself in the RPG.")
 	async def register(self, ctx):
@@ -139,6 +227,10 @@ class RPG(commands.Cog):
 	async def changeclass(self, ctx):
 		if self.game:
 			await ctx.send("A game is currently in progress!")
+			return
+
+		if not self.is_registered(ctx.author.id):
+			await ctx.send("You are not registered for the RPG. Please register using !register.")
 			return
 
 		user_id = ctx.author.id
@@ -182,6 +274,10 @@ class RPG(commands.Cog):
 	async def friend(self, ctx, member: discord.Member):
 		if self.game:
 			await ctx.send("A game is currently in progress!")
+			return
+
+		if not self.is_registered(ctx.author.id):
+			await ctx.send("You are not registered for the RPG. Please register using !register in order to make friends.")
 			return
 
 		player_exists = False
@@ -256,11 +352,38 @@ class RPG(commands.Cog):
 		if self.game:
 			await ctx.send("A game is currently in progress!")
 			return
+
+		if not self.is_registered(ctx.author.id):
+			await ctx.send("You are not registered for the RPG. Please register using !register in order to make friends.")
+			return
 			
 		self_id = ctx.author.id
 		unfriend_id = member.id
 		 
 		friends = False
+
+		await ctx.send(f"Are you sure you don't wanna be friends with {self.get_player_by_id(unfriend_id).name} anymore? (Y/N)")
+
+		def check(msg):
+			return msg.author == ctx.author and msg.channel == ctx.channel
+
+		count = 0
+
+		while True:
+			msg = await self.client.wait_for("message", check=check)
+			if msg.content.lower() == "y":
+				break
+			elif msg.content.lower() == "n":
+				await ctx.send("Then why waste my time???")
+				return
+
+			else:
+				await ctx.send("That is not even an option wtf?")
+				count += 1
+
+				if count == 3:
+					await ctx.send("You are retarded I'm done with you.")
+					return
 
 		for pair in self.friends:
 			if (self_id == pair[0] and unfriend_id == pair[1]) or (self_id == pair[1] and unfriend_id == pair[0]):
@@ -271,10 +394,50 @@ class RPG(commands.Cog):
 			await ctx.send("You are not friends with this user anyway.")
 			return
 
+		self.save_friends()
 		await ctx.send(f"{ctx.author.mention} lost all connections with {member.mention}.")
 
 
 	# HELPER FUNCTIONS
+
+	def get_friends(self, user_id):
+		friends = []
+		for pair in self.friends:
+			if pair[0] == user_id:
+				friends.append(pair[1])
+			elif pair[1] == user_id:
+				friends.append(pair[0])
+
+		friends = [self.get_player_by_id(friend) for friend in friends]
+		return friends
+
+	def are_friends(self, player1_user_id, player2_user_id):
+		for pair in self.friends:
+			if pair[0] == player1_user_id:
+				if pair[1] == player2_user_id:
+					return True
+
+			elif pair[1] == player1_user_id:
+				if pair[0] == player2_user_id:
+					return True
+
+		return False
+
+	def is_registered(self, user_id):
+		registered = False
+
+		for player in self.players:
+			if player.user_id == user_id:
+				registered = True
+
+		return registered
+
+	def get_player_by_id(self, user_id):
+		for player in self.players:
+			if player.user_id == user_id:
+				return player
+
+		return None
 
 	def save_friend_pair(self, friend1, friend2):
 		self.friends.append((friend1, friend2,))
