@@ -242,6 +242,8 @@ class RPG(commands.Cog):
 			await ctx.send("You are currently not in any party.")
 			return
 
+		# SJKDFGSDJFGSJFH
+
 
 	@commands.command(description="Register yourself in the RPG.")
 	async def register(self, ctx):
