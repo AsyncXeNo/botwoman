@@ -27,15 +27,8 @@ class RPG_GAME(commands.Cog):
 	@commands.command(description="TEST")
 	@commands.is_owner()
 	async def test(self, ctx):
-		types = {
-			0: "SMALL",
-			1: "MEDIUM",
-			2: "LARGE",
-			3: "THE EMBODIMENT OF DEGENERACY"
-		}
-		pizza = Pizza(types[random.randint(0, 3)])
+		pizza = Pizza(random.choice(Pizza.PIZZATYPES))
 		await ctx.send(pizza.get_info())
-		await pizza.attack(ctx, 0)
 
 
 def setup(client):
