@@ -216,7 +216,7 @@ class RPG(commands.Cog):
 
 		if is_owner and party_index != None:
 			self.parties[party_index].append(self.get_player_by_id(ctx.author.id))
-			await ctx.send(f"Successfully joined {self.get_player_by_id(self.parties[party_index][0].user_id)}'s party!")
+			await ctx.send(f"Successfully joined {self.get_player_by_id(self.parties[party_index][0].user_id).name}'s party!")
 
 
 	@commands.command(description="Leave whichever party you are a part of.")
