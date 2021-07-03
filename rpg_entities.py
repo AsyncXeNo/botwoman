@@ -172,8 +172,8 @@ class Pizza(Entity):
 	def get_info(self):
 		return f"**{self.pizzatype.title()} Pizza**\n{self.get_stat_info()}"
 
-	def get_pizza_info(self):
-		return f"**{self.pizzatype.title()} Pizza**"
+	def get_monster_info(self):
+		return f"{self.pizzatype.title()} Pizza"
 
 	def validate(self):
 		if not (self.pizzatype in self.PIZZATYPES):
@@ -262,95 +262,76 @@ class Room(object):
 		self.client = client
 		self.ctx = ctx
 		self.pos = pos
-		self.players = []
-		self.enemies = []
+		self.parties = []
+		self.enemy_parties = []
 		self.items = []
 
-		self.event_done = False
+	def get_party_by_owner_id(self, owner_id):
+		for party in self.parties:
+			if party[0].user_id == owner_id:
+				return party
 
-	def add_player(self, player):
-		self.players.append(player)
-		player.set_room(self)
+		raise Exception("party not found (Room class)")
 
-	def setup(self):
+	def add_party(self, owner):
+		party = self.client.get_cog("RPG").get_party_by_owner_id(owner.user_id)
+		self.parties.append(party)
+		for player in party:
+			player.set_room(self)
+
+		self.setup(self.parties.index(party))
+
+	def setup(self, index):
 		# CALLED AT THE VERY START WHILE SETTING UP THE DUNGEON AND EVERY TIME SOMEONE CHANGES ROOMS
-		parties = []
-		max_enemies = len(self.players)
-		for player in self.players:
-			party = [player]
-			for friend in self.players:
-				if self.client.get_cog("RPG").are_friends(friend.user_id, player.user_id):
-					party.append(friend)
-
-			parties.append(party)
-			if len(party) < max_enemies:
-				max_enemies = len(party)
 
 		count = 0
 		average_lv = 0
-		for party in parties:
-			for friend in party:
-				count += 1
-				average_lv += friend.level
+		for player in self.parties[index]:
+			count += 1
+			average_lv += player.level
 
 		if count != 0:
 			average_lv //= count
 		else:
 			average_lv = 10
 
-		if not len(self.players) == 0:
-			enemy_count = random.randint(1, max_enemies)
+		if not len(self.parties[index]) == 0:
+			enemy_count = random.randint(1, len(self.parties[index]))
+			enemy_party = []
 			for enemy in range(enemy_count):
-				self.enemies.append(Pizza(Pizza.PIZZATYPES[random.randint(0, average_lv//3)]))
+				enemy_party.append(Pizza(Pizza.PIZZATYPES[random.randint(0, average_lv//3)]))
 
-		self.event_done = False
+			self.enemy_parties.append(enemy_party)
 
 	def get_info(self):
-		response = f"{'-'*50}\n{self.pos}\nPLAYERS:\n"
-		for player in self.players:
-			response += player.__str__()
+		response = f"{'-'*50}\n"
+		for party in self.parties:
+			party = [player.name for player in party]
+			response += f"PLAYER PARTY: `{', '.join(party)}`\n"
 
-		response += "\nENEMIES:\n"
-		for enemy in self.enemies:
-			response += enemy.get_info()
+		for party in self.enemy_parties:
+			party = [pizza.get_monster_info() for pizza in party]
+			response += f"ENEMY PARTY: {', '.join(party)}\n"
 
 		response += f"{'-'*50}\n"
 
 		return response
 
-	async def start_event(self, ctx):
-		if self.event_done:
-			await ctx.send("Your event for this room has already ended. Please move to a new room using !scout.")
-			return
-		if ctx.channel != self.ctx.channel:
-			await ctx.send("please run this command in the game channel (The channel where the owner used !start command.)")
-			return
+	async def start_event(self, owner):
+		party = self.get_party_by_owner_id(owner.user_id)
+		index = self.parties.index(party)
 
-		main = None
-		party = []
-		for player in self.players:
-			if player.user_id == ctx.author.id:
-				main = player
-				party.append(player)
 
-		if not main:
-			await ctx.send("How does this even happen??? Pls contact AsyncXeno#7777 cuz something went horribly wrong.")
-			raise Exception("Player not found in self.players (somehow)")
-
-		for player in self.players:
-			if self.client.get_cog("RPG").are_friends(main.user_id, player.user_id):
-				party.append(player)
-
-		average_lv = 0
-		for player in party:
-			average_lv += player.level
-		average_lv//=len(party)
-
-		await ctx.send(f"`PARTY - {', '.join([player.name for player in party])}` is going to fight `PARTY - {', '.join([pizza.get_pizza_info() for pizza in self.enemies])}`!")
+		await self.ctx.send(f"`PARTY - {', '.join([player.name for player in party])}` is going to fight `PARTY - {', '.join([pizza.get_monster_info() for pizza in self.enemy_parties[index]])}`!")
 		await self.ctx.send("PRETEND THIS IS AN EVENT PLS OK GOOD")
 
-		self.event_done = True
 
-	async def stop_event(self):
-		await self.ctx.send("Event for room located at {self.pos} has ended.")
-		self.event_done = True
+
+
+
+		# very end
+		index = self.parties.index(party)
+		self.parties.remove(self.parties[index])
+		self.enemy_parties.remove(self.enemy_parties[index])
+
+		await self.client.get_cog("RPG_GAME").move_party(self.ctx, party)

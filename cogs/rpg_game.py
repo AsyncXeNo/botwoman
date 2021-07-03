@@ -16,8 +16,13 @@ class RPG_GAME(commands.Cog):
 			await ctx.send("The game has not started yet.")
 			return 
 
+		if not self.validate_ctx(ctx):
+			await ctx.send("Please use the command in the channel where the game is running.")
+			return 
+
 		if not self.client.get_cog("RPG").is_registered(ctx.author.id):
 			await ctx.send("You are not even registered for the game. Please wait for current game to finish and then you can register using !register.")
+			return
 
 		await ctx.send("you moved to a new room!! (bro trust me)")
 		self.client.get_cog("RPG").save_players()
@@ -29,8 +34,13 @@ class RPG_GAME(commands.Cog):
 			await ctx.send("The game has not started yet.")
 			return 
 
+		if not self.validate_ctx(ctx):
+			await ctx.send("Please use the command in the channel where the game is running.")
+			return 
+
 		if not self.client.get_cog("RPG").is_registered(ctx.author.id):
 			await ctx.send("You are not even registered for the game. Please wait for current game to finish and then you can register using !register.")
+			return
 
 		player = self.client.get_cog("RPG").get_player_by_id(ctx.author.id)
 		if player:
@@ -43,24 +53,41 @@ class RPG_GAME(commands.Cog):
 			await ctx.send("The game has not started yet.")
 			return 
 
+		if not self.validate_ctx(ctx):
+			await ctx.send("Please use the command in the channel where the game is running.")
+			return 
+
 		if not self.client.get_cog("RPG").is_registered(ctx.author.id):
 			await ctx.send("You are not even registered for the game. Please wait for current game to finish and then you can register using !register.")
+			return
 
-		player = self.client.get_cog("RPG").get_player_by_id(ctx.author.id)
-		if not player.room:
+		if not self.client.get_cog("RPG").is_party_owner(ctx.author.id):
+			await ctx.send("You do not own a party! Please tell your party owner (if you are in a party) to start the event.")
+			return
+
+		party = self.client.get_cog("RPG").get_party_by_owner_id(ctx.author.id)
+
+		if not party[0].room:
 			await ctx.send("How tf are you not in a room? Please contact AsyncXeno#7777 and tell him how shit of a programmer he is thanks. As for the game, you can't play cuz you're SOMEHOW not inside the dungeon.")
-		await player.room.start_event(ctx)
+
+		await party[0].room.start_event(party[0])
 
 
 	# HELPER FUNCTIONS
 	def validate(self):
-		return self.client.get_cog("RPG").game
+		return self.client.get_cog("RPG").game 
+
+	def validate_ctx(self, ctx):
+		return ctx.channel == self.client.get_cog("RPG").game_ctx.channel
+
+	async def move_party(self, ctx, party):
+		await ctx.send("This will be implemented later pls thanks")
 
 
 	@commands.command(description="TEST")
 	@commands.is_owner()
 	async def test(self, ctx):
-		await ctx.send([friend.name for friend in self.client.get_cog("RPG").get_friends(ctx.author.id)])
+		await ctx.send("This command is for testing purposes.")
 
 
 def setup(client):

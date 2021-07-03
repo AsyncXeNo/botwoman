@@ -18,6 +18,8 @@ class RPG(commands.Cog):
 		self.players = []
 		self.parties = []
 
+		self.game_ctx = None
+
 		self.playerfilepath = "data/player_info.pickle"
 		self.idsfilepath = "data/generated_ids.json"
 
@@ -38,33 +40,23 @@ class RPG(commands.Cog):
 		room_range = range(len(self.players)) if len(self.players) >= 4 else 4
 		await ctx.send("Setting up the dungeon...")
 		self.dungeon = [[Room((col, row), ctx, self.client) for row in range(room_range)] for col in range(room_range)]
-		await ctx.send("Assigning players to random rooms...")
+		await ctx.send("Assigning parties to random rooms...")
 
-		for player in self.players:
-			if player.room == None:
-				coords = Vector2()
-				coords.y = self.dungeon.index(random.choice(self.dungeon))
-				coords.x = self.dungeon[coords.y].index(random.choice(self.dungeon[coords.y]))
+		for party in self.parties:
+			coords = Vector2()
+			coords.y = self.dungeon.index(random.choice(self.dungeon))
+			coords.x = self.dungeon[coords.y].index(random.choice(self.dungeon[coords.y]))
 
-				party = self.get_friends(player.user_id)
-				print([friend.name for friend in party])
-				party.append(player)
-
-				print([friend.name for friend in party])
-	
-				for friend in party:
-					self.dungeon[coords.x][coords.y].add_player(friend)
-
-				self.parties.append(party)
+			self.dungeon[coords.x][coords.y].add_party(party[0])
 
 		for row in self.dungeon:
 			for room in row:
-				room.setup()
 				await ctx.send(room.get_info())
 
 
 		await ctx.send("All set!")
 		self.game = True
+		self.game_ctx = ctx
 
 
 	@commands.command(description="Stop the game (only meant to be used during development.)")
@@ -137,7 +129,7 @@ class RPG(commands.Cog):
 			response += f"PARTY -> {party}\n"
 
 		if response == "":
-			await ctx.send("No parties. Maybe you haven't started the game yet?")
+			await ctx.send("No parties.")
 			return
 
 		await ctx.send(response)
@@ -191,7 +183,7 @@ class RPG(commands.Cog):
 
 		self.parties.append([self.get_player_by_id(ctx.author.id)])
 
-		await ctx.send(f"Successfully created {self.get_player_by_id(ctx.author.id)}'s party!")
+		await ctx.send(f"Successfully created {self.get_player_by_id(ctx.author.id).name}'s party!")
 
 
 	@commands.command(description="Join someone's party")
@@ -242,7 +234,60 @@ class RPG(commands.Cog):
 			await ctx.send("You are currently not in any party.")
 			return
 
-		# SJKDFGSDJFGSJFH
+		for party in self.parties:
+			for friend in party:
+				if friend.user_id == ctx.author.user_id:
+					party_index = self.parties.index(party)
+					player = friend
+
+		if self.parties[party_index].index(player) == 0:
+			await ctx.send("Are you sure you want to dismantle your party? (Y/N)")
+
+			def check(msg):
+				return msg.author == ctx.author and msg.channel == ctx.channel
+
+			count = 0
+			while True:
+				msg = await self.client.wait_for("message", check=check)
+
+				if not msg.content.lower() in ["y", "n"]:
+					await ctx.send("That's not even an option wtf?")
+
+				elif msg.content.lower() == "y":
+					self.parties.remove(self.parties[party_index])
+
+				elif msg.content.lower() == "n":
+					await ctx.send("Alright then.")
+					return
+
+				count += 1
+				if count == 3:
+					await ctx.send("You are retarded I'm done with you.")
+					return
+
+		else:
+			self.parties[party_index].remove(player)
+			await ctx.send(f"You are no longer in a {self.parties[party_index][0].name}'s party.")
+			return
+
+
+	@commands.command(description="See your party.")
+	async def myparty(self, ctx):
+		if self.game:
+			await ctx.send("A game is currently in progress!")
+			return
+
+		if not self.is_registered(ctx.author.id):
+			await ctx.send("You are not registered for the RPG. Please register using !register.")
+			return
+
+		if not self.party(ctx.author.id):
+			await ctx.send("You are currently not in any parties.")
+
+		for party in self.parties:
+			for friend in party:
+				if friend.user_id == ctx.author.id:
+					await ctx.send(f"**{self.parties[self.parties.index(party)][0].name}'s Party:**\n```{', '.join([self.parties[self.parties.index(party)]])}```")
 
 
 	@commands.command(description="Register yourself in the RPG.")
@@ -456,6 +501,20 @@ class RPG(commands.Cog):
 
 
 	# HELPER FUNCTIONS
+
+	def get_party_by_owner_id(self, owner_id):
+		for party in self.parties:
+			if party[0].user_id == owner_id:
+				return party
+
+		return None
+
+	def is_party_owner(self, user_id):
+		for party in self.parties:
+			if party[0].user_id == user_id:
+				return True
+
+		return False
 
 	def party(self, user_id):
 		for party in self.parties:
