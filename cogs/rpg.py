@@ -17,7 +17,6 @@ class RPG(commands.Cog):
 
 		self.players = []
 		self.parties = []
-		self.friends = []
 
 		self.playerfilepath = "data/player_info.pickle"
 		self.idsfilepath = "data/generated_ids.json"
@@ -82,10 +81,9 @@ class RPG(commands.Cog):
 	@commands.command(description="purges friends list and all registered players")
 	@commands.is_owner()
 	async def purge(self, ctx):
-		self.friends = []
+		self.parties = []
 		self.players = []
 		self.save_players()
-		self.save_friends()
 
 		await ctx.send("purged.")
 
@@ -185,6 +183,63 @@ class RPG(commands.Cog):
 
 		if not self.is_registered(ctx.author.id):
 			await ctx.send("You are not registered for the RPG. Please register using !register in order to make a party.")
+			return
+
+		if self.party(ctx.author.id):
+			await ctx.send("Seems like you are already in a party. Exit the party to make a new one.")
+			return
+
+		self.parties.append([self.get_player_by_id(ctx.author.id)])
+
+		await ctx.send(f"Successfully created {self.get_player_by_id(ctx.author.id)}'s party!")
+
+
+	@commands.command(description="Join someone's party")
+	async def joinparty(self, ctx, member:discord.Member):
+
+		if self.game:
+			await ctx.send("A game is currently in progress!")
+			return
+
+		if not self.is_registered(ctx.author.id):
+			await ctx.send("You are not registered for the RPG. Please register using !register.")
+			return
+
+		party_owner = self.get_player_by_id(member.id)
+		is_owner = False
+		party_index = None
+
+		for party in self.parties:
+			if party[0].user_id == party_owner.user_id:
+				is_owner = True
+				party_index = self.parties.index(party)
+
+		if self.party(ctx.author.id):
+			await ctx.send("Seems like you are already in a party. Exit the party to make a new one.")
+			return
+
+		if not is_owner:
+			await ctx.send("The person you mentioned doesn't own any party")
+			return
+
+		if is_owner and party_index != None:
+			self.parties[party_index].append(self.get_player_by_id(ctx.author.id))
+			await ctx.send(f"Successfully joined {self.get_player_by_id(self.parties[party_index][0].user_id)}'s party!")
+
+
+	@commands.command(description="Leave whichever party you are a part of.")
+	async def leaveparty(self, ctx):
+		
+		if self.game:
+			await ctx.send("A game is currently in progress!")
+			return
+
+		if not self.is_registered(ctx.author.id):
+			await ctx.send("You are not registered for the RPG. Please register using !register.")
+			return
+
+		if not self.party(ctx.author.id):
+			await ctx.send("You are currently not in any party.")
 			return
 
 
@@ -399,6 +454,14 @@ class RPG(commands.Cog):
 
 
 	# HELPER FUNCTIONS
+
+	def party(self, user_id):
+		for party in self.parties:
+			for player in party:
+				if player.user_id == user_id:
+					return True
+
+		return False
 
 	def get_friends(self, user_id):
 		friends = []
