@@ -157,7 +157,7 @@ class Pizza(Entity):
 		for stat in self.stats:
 			self.stats[stat] = random.randint(self.stats[stat][0], self.stats[stat][1])
 
-		super().__init__(self, self.stats["maxhp"], self.stats["type"], self.stats["physical"], self.stats["magic"],self.stats["defense"], self.stats["magic_def"], self.stats["agility"])
+		Entity.__init__(self, self.stats["maxhp"], self.stats["type"], self.stats["physical"], self.stats["magic"],self.stats["defense"], self.stats["magic_def"], self.stats["agility"])
 
 		self.exp_gives = self.stats["exp"]
 
@@ -271,7 +271,7 @@ class Nist(Entity):
 		for stat in self.stats:
 			self.stats[stat] = random.randint(self.stats[stat][0], self.stats[stat][1])
 		
-		super().__init__(self, self.stats["maxhp"], self.stats["type"], self.stats["physical"], self.stats["magic"],self.stats["defense"], self.stats["magic_def"], self.stats["agility"])
+		Entity.__init__(self, self.stats["maxhp"], self.stats["type"], self.stats["physical"], self.stats["magic"],self.stats["defense"], self.stats["magic_def"], self.stats["agility"])
 
 		self.exp_gives = self.stats["exp"]
 
@@ -407,3 +407,5 @@ class Room(object):
 		self.enemy_parties.remove(self.enemy_parties[index])
 
 		await self.client.get_cog("RPG_GAME").move_party(self.ctx, party)
+
+

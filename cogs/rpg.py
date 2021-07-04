@@ -5,8 +5,9 @@ import string
 import pickle
 from discord.ext import commands
 from discord.utils import get
+import copy
 
-from rpg_entities import *
+from rpg_stuff import *
 from utils import *
 
 
@@ -38,7 +39,7 @@ class RPG(commands.Cog):
 			await ctx.send("A game is already in progress!")
 			return
 
-		room_range = range(len(self.players)) if len(self.players) >= 4 else 4
+		room_range = len(self.players) if len(self.players) >= 4 else 4
 		await ctx.send("Setting up the dungeon...")
 		self.dungeon = [[Room((col, row), ctx, self.client) for row in range(room_range)] for col in range(room_range)]
 		await ctx.send("Assigning parties to random rooms...")
@@ -68,6 +69,8 @@ class RPG(commands.Cog):
 			return 
 
 		self.game = False
+		self.game_ctx = False
+		self.dungeon = None
 		await ctx.send("Game has ended.")
 	
 
@@ -282,10 +285,14 @@ class RPG(commands.Cog):
 		if not self.party(ctx.author.id):
 			await ctx.send("You are currently not in any parties.")
 
+		myparty = None
+
 		for party in self.parties:
 			for friend in party:
 				if friend.user_id == ctx.author.id:
-					await ctx.send(f"**{self.parties[self.parties.index(party)][0].name}'s Party:**\n```{', '.join([self.parties[self.parties.index(party)]])}```")
+					myparty = copy.copy(party)
+					myparty = [usr.name for usr in myparty]
+					await ctx.send(f"**{self.parties[self.parties.index(party)][0].name}'s Party:**\n```{', '.join(myparty)}```")
 
 
 	@commands.command(description="Register yourself in the RPG.")

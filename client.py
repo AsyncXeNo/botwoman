@@ -38,10 +38,10 @@ async def on_ready():
 	)
 
 
-@client.event
-async def on_command_error(ctx, error):
-	channel = client.get_channel(DEBUGCHANNEL)
-	await channel.send('```{0}```'.format(error))
+# @client.event
+# async def on_command_error(ctx, error):
+# 	channel = client.get_channel(DEBUGCHANNEL)
+# 	await channel.send('```{0}```'.format(error))
 
 
 # @client.event

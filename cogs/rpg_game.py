@@ -2,7 +2,7 @@ import discord
 import random
 from discord.ext import commands
 
-from rpg_entities import Pizza
+from rpg_stuff import Pizza
 from utils import Vector2
 
 
@@ -89,7 +89,7 @@ class RPG_GAME(commands.Cog):
 		
 		self.client.get_cog("RPG").dungeon[coords.x][coords.y].add_party(party[0])
 
-		await ctx.send("This will be implemented later pls thanks")
+		await ctx.send("Moved to a new room.")
 
 
 	@commands.command(description="TEST")
