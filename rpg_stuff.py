@@ -224,11 +224,11 @@ class Pizza(Entity):
 		pass
 
 	def pizza_box(self, ctx, players):
-		# summons massive cardboard box to protect itself (ups physical defense)
+		# summons massive cardboard box to protect itself for the next 2 turns(ups physical defense)
 		pass
 
 	def cheese_spread(self, ctx, players):
-		# spreads lots of cheese over himself (ups magic resist)
+		# spreads lots of cheese over himself (ups def and mr)
 		pass
 
 	def greece_shot(self, ctx, players):
@@ -274,6 +274,8 @@ class Nist(Entity):
 		Entity.__init__(self, self.stats["maxhp"], self.stats["type"], self.stats["physical"], self.stats["magic"],self.stats["defense"], self.stats["magic_def"], self.stats["agility"])
 
 		self.exp_gives = self.stats["exp"]
+
+		self.personalities = ["NORMAL", "SIMP", "INCEL"]
 
 		self.attacks = {
 			"NORMAL": [],
@@ -323,6 +325,51 @@ class Nist(Entity):
 
 		
 	# ATTACKS
+
+	def snip_snip(self, ctx, players):
+		# nist cuts off a random percentage of the player(s) health (upto a limit)
+		pass
+
+	def a_new_persona(self, ctx, players):
+		# nist changes his personality, confusing everybody and lowering their defenses (def and mr)	
+		pass
+
+	def did_i_just_catch_you_pirating(self, ctx, players):
+		# starts a rant against pirating, dealing a shit ton of mixed damage to all players (also increases agility)
+		pass
+
+	def i_am_the_hentai_man(self, ctx, players):
+		# nist shows the players random hentai from the interwebs, distracting them. (decreses physcial and magic damage and agility of players)
+		pass
+
+	def guys_see_my_edit_guys(self, ctx, players):
+		# shows the players his anime edits, embarassing himself cuz they turned out worse than the actual images. (loses half remaining hp)
+		pass
+
+	def fucking_feminists(self, ctx, players):
+		# goes on a rant about how feminists are stupid and how he hates women. (gains shit ton of armor and mr) (if player is of class woman they take a huge percentage of their max health as damage.)
+		pass
+
+	def editor_shield(self, ctx, players):
+		# edits a shield on his pc and uses it to defend himself (bonus armor for the next 2 turns)
+		pass
+
+	def i_have_a_girlfriend_btw(self, ctx, players):
+		# starts talking about his girlfriend for absolutely no reason. Makes the players sleepy and miss a turn.
+		pass
+
+	def idiot_complains_about_you(self, ctx, players):
+		# nist attemps to roast the players. 50% chance of dealing physcial damage to players.
+		pass
+
+	def horrible_mic(self, ctx, players):
+		# nist joins the vc, making everyone's ears bleed cuz of his god aweful mic (deals mixed damage)
+		pass
+
+	
+
+
+
 
 
 
