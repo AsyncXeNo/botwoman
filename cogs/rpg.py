@@ -7,6 +7,7 @@ from discord.ext import commands
 from discord.utils import get
 
 from rpg_entities import *
+from utils import *
 
 
 class RPG(commands.Cog):
@@ -273,9 +274,6 @@ class RPG(commands.Cog):
 
 	@commands.command(description="See your party.")
 	async def myparty(self, ctx):
-		if self.game:
-			await ctx.send("A game is currently in progress!")
-			return
 
 		if not self.is_registered(ctx.author.id):
 			await ctx.send("You are not registered for the RPG. Please register using !register.")
@@ -606,15 +604,6 @@ class RPG(commands.Cog):
 			json.dump(generated, f, indent=4)
 
 		return gen
-
-
-class Vector2(object):
-	def __init__(self, x=None, y=None):
-		self.x = x
-		self.y = y
-
-	def get_coords(self):
-		return (x, y,)
 
 	
 def setup(client):

@@ -3,6 +3,7 @@ import random
 from discord.ext import commands
 
 from rpg_entities import Pizza
+from utils import Vector2
 
 
 class RPG_GAME(commands.Cog):
@@ -44,7 +45,7 @@ class RPG_GAME(commands.Cog):
 
 		player = self.client.get_cog("RPG").get_player_by_id(ctx.author.id)
 		if player:
-			await ctx.send(f"**Info-**\n{player.room.get_info()}")
+			await ctx.send(f"{player.room.get_info()}")
 
 
 	@commands.command(description="Starts an event for the room that the player is currently in.")
@@ -81,13 +82,20 @@ class RPG_GAME(commands.Cog):
 		return ctx.channel == self.client.get_cog("RPG").game_ctx.channel
 
 	async def move_party(self, ctx, party):
+		coords = Vector2()
+		coords.y = self.client.get_cog("RPG").dungeon.index(random.choice(self.client.get_cog("RPG").dungeon))
+		coords.x = self.client.get_cog("RPG").dungeon[coords.y].index(random.choice(self.client.get_cog("RPG").dungeon[coords.y]))
+
+		
+		self.client.get_cog("RPG").dungeon[coords.x][coords.y].add_party(party[0])
+
 		await ctx.send("This will be implemented later pls thanks")
 
 
 	@commands.command(description="TEST")
 	@commands.is_owner()
 	async def test(self, ctx):
-		await ctx.send("This command is for testing purposes.")
+		await self.client.get_cog("RPG").get_player_by_id(ctx.author.id).level_up(ctx)
 
 
 def setup(client):

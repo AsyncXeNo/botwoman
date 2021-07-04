@@ -111,6 +111,7 @@ class Player(Entity):
 		if self.state.upper() == "STUNNED":
 			await ctx.send(f"**{self.name}** is currently ***{self.state}*** and cannot attack!")
 
+
 	async def give_exp(self, ctx, exp):
 		self.exp += exp
 		self.check_if_level_up(ctx)
@@ -131,7 +132,8 @@ class Player(Entity):
 
 	# ATTACKS
 
-
+	# mage
+	
 
 
 
@@ -147,7 +149,7 @@ class Pizza(Entity):
 	PIZZATYPES = ["SMALL", "MEDIUM", "LARGE", "THE EMBODIMENT OF DEGENERACY"]
 	PIZZASTATES = ["NORMAL", "MADDENED", "RELAXED", "STUNNED"]
 
-	def __init__(self, pizzatype="MEDIUM"):
+	def __init__(self, pizzatype):
 		self.pizzatype = pizzatype.upper()
 		self.validate()
 
@@ -155,7 +157,7 @@ class Pizza(Entity):
 		for stat in self.stats:
 			self.stats[stat] = random.randint(self.stats[stat][0], self.stats[stat][1])
 
-		Entity.__init__(self, self.stats["maxhp"], self.stats["type"], self.stats["physical"], self.stats["magic"],self.stats["defense"], self.stats["magic_def"], self.stats["agility"])
+		super().__init__(self, self.stats["maxhp"], self.stats["type"], self.stats["physical"], self.stats["magic"],self.stats["defense"], self.stats["magic_def"], self.stats["agility"])
 
 		self.exp_gives = self.stats["exp"]
 
@@ -187,7 +189,7 @@ class Pizza(Entity):
 
 	async def attack(self, ctx, players):
 		if self.state.upper() == "STUNNED":
-			await ctx.send(f"{self.get_pizza_info()} is currently ***{self.state}*** and cannot attack!")
+			await ctx.send(f"{self.get_monster_info()} is currently ***{self.state}*** and cannot attack!")
 			return
 
 		options = self.attacks[self.state]
@@ -198,13 +200,13 @@ class Pizza(Entity):
 	async def death(self, ctx, players):
 		players = [f"**{player.name}**" for player in players]
 		if len(players) > 2:
-			await ctx.send(f"{(', ').join(players[:-1])} and {players[-1]} have slain {self.get_pizza_info()}! All of them gained {self.exp_gives//len(players)} exp points.")
+			await ctx.send(f"{(', ').join(players[:-1])} and {players[-1]} have slain {self.get_monster_info()}! All of them gained {self.exp_gives//len(players)} exp points.")
 
 		elif len(players) == 2:
-			await ctx.send(f"{(' and ').join(players)} have slain {self.get_pizza_info()}! Both of them gained {self.exp_gives//len(players)} experience points.")
+			await ctx.send(f"{(' and ').join(players)} have slain {self.get_monster_info()}! Both of them gained {self.exp_gives//len(players)} experience points.")
 
 		else:
-			await ctx.send(f"{players[0]} has slain {self.get_pizza_info()}! They gained {self.exp_gives} experience points.")
+			await ctx.send(f"{players[0]} has slain {self.get_monster_info()}! They gained {self.exp_gives} experience points.")
 
 
 	# ATTACKS
@@ -254,6 +256,76 @@ class Pizza(Entity):
 		pass
 
 
+class Nist(Entity):
+	with open("res/rpg/pizzastats.json", "r") as f:
+		STATS = json.load(f)
+
+	NISTTYPES = ["SMALL", "MEDIUM", "LARGE", "FEMI(NIST)"]
+	NISTSTATES = ["NORMAL", "MADDENED", "RELAXED", "STUNNED"]
+	
+	def __init__(self, nisttype):
+		self.nisttype = nisttype.upper()
+		self.validate()
+
+		self.stats = copy.copy(self.STATS[self.nisttype])
+		for stat in self.stats:
+			self.stats[stat] = random.randint(self.stats[stat][0], self.stats[stat][1])
+		
+		super().__init__(self, self.stats["maxhp"], self.stats["type"], self.stats["physical"], self.stats["magic"],self.stats["defense"], self.stats["magic_def"], self.stats["agility"])
+
+		self.exp_gives = self.stats["exp"]
+
+		self.attacks = {
+			"NORMAL": [],
+			"MADDENED": [],
+			"RELAXED": []
+		}
+
+		self.default_state = "NORMAL"
+		self.state =  self.default_state
+
+	def get_info(self):
+		return f"**{self.nisttype.title()} Nist**\n{self.get_stat_info()}"
+
+	def get_monster_info(self):
+		return f"{self.nisttype.title()} Nist"
+
+	def validate(self):
+		if not (self.nisttype in self.NISTTYPES):
+			raise Exception("Invalid nist type.")
+
+	def change_state(self, new_state):
+		if not (new_state.upper() in self.NISTSTATES):
+			raise Exception("Invalid nist state.")
+
+		self.state = new_state.upper()
+
+	async def attack(self, ctx, players):
+		if self.state.upper() == "STUNNED":
+			await ctx.send(f"{self.get_monster_info()} is currently ***{self.state}*** and cannot attack!")
+			return
+
+		options = self.attacks[self.state]
+		attack = random.choice(options)
+		attack(ctx, players)
+		await ctx.send(attack)
+	
+	async def death(self, ctx, players):
+		players = [f"**{player.name}**" for player in players]
+		if len(players) > 2:
+			await ctx.send(f"{(', ').join(players[:-1])} and {players[-1]} have slain {self.get_monster_info()}! All of them gained {self.exp_gives//len(players)} exp points.")
+
+		elif len(players) == 2:
+			await ctx.send(f"{(' and ').join(players)} have slain {self.get_monster_info()}! Both of them gained {self.exp_gives//len(players)} experience points.")
+
+		else:
+			await ctx.send(f"{players[0]} has slain {self.get_monster_info()}! They gained {self.exp_gives} experience points.")
+
+		
+	# ATTACKS
+
+
+
 # --------------------------------------------------- ROOMS --------------------------------------------------------
 
 
@@ -298,22 +370,22 @@ class Room(object):
 		if not len(self.parties[index]) == 0:
 			enemy_count = random.randint(1, len(self.parties[index]))
 			enemy_party = []
-			for enemy in range(enemy_count):
+			for _ in range(enemy_count):
 				enemy_party.append(Pizza(Pizza.PIZZATYPES[random.randint(0, average_lv//3)]))
 
 			self.enemy_parties.append(enemy_party)
 
 	def get_info(self):
-		response = f"{'-'*50}\n"
+		response = f"```python\n# <{self.pos[0]}, {self.pos[1]}>\n"
 		for party in self.parties:
 			party = [player.name for player in party]
-			response += f"PLAYER PARTY: `{', '.join(party)}`\n"
+			response += f"# PLAYER PARTY: {', '.join(party)}\n"
 
 		for party in self.enemy_parties:
 			party = [pizza.get_monster_info() for pizza in party]
-			response += f"ENEMY PARTY: {', '.join(party)}\n"
+			response += f"# ENEMY PARTY: {', '.join(party)}\n"
 
-		response += f"{'-'*50}\n"
+		response += "```"
 
 		return response
 
