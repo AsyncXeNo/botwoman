@@ -12,8 +12,8 @@ class Pizza(Entity):
 	with open("res/rpg/pizzastats.json", "r") as f:
 		STATS = json.load(f)
 
-	PIZZATYPES = ["SMALL", "MEDIUM", "LARGE", "THE EMBODIMENT OF DEGENERACY"]
-	PIZZASTATES = ["NORMAL", "MADDENED", "RELAXED", "STUNNED"]
+	TYPES = ["SMALL", "MEDIUM", "LARGE", "THE EMBODIMENT OF DEGENERACY"]
+	STATES = ["NORMAL", "MADDENED", "RELAXED", "STUNNED"]
 
 	def __init__(self, pizzatype):
 		self.pizzatype = pizzatype.upper()
@@ -44,11 +44,11 @@ class Pizza(Entity):
 		return f"{self.pizzatype.title()} Pizza"
 
 	def validate(self):
-		if not (self.pizzatype in self.PIZZATYPES):
+		if not (self.pizzatype in self.TYPES):
 			raise Exception("Invalid pizza type.")
 
 	def change_state(self, new_state):
-		if not (new_state.upper() in self.PIZZASTATES):
+		if not (new_state.upper() in self.STATES):
 			raise Exception("Invalid pizza state.")
 
 		self.state = new_state.upper()
@@ -126,8 +126,8 @@ class Nist(Entity):
 	with open("res/rpg/pizzastats.json", "r") as f:
 		STATS = json.load(f)
 
-	NISTTYPES = ["SMALL", "MEDIUM", "LARGE", "FEMI(NIST)"]
-	NISTSTATES = ["NORMAL", "MADDENED", "RELAXED", "STUNNED"]
+	TYPES = ["SMALL", "MEDIUM", "LARGE", "FEMI(NIST)"]
+	STATES = ["NORMAL", "MADDENED", "RELAXED", "STUNNED"]
 	
 	def __init__(self, nisttype):
 		self.nisttype = nisttype.upper()
@@ -159,11 +159,11 @@ class Nist(Entity):
 		return f"{self.nisttype.title()} Nist"
 
 	def validate(self):
-		if not (self.nisttype in self.NISTTYPES):
+		if not (self.nisttype in self.TYPES):
 			raise Exception("Invalid nist type.")
 
 	def change_state(self, new_state):
-		if not (new_state.upper() in self.NISTSTATES):
+		if not (new_state.upper() in self.STATES):
 			raise Exception("Invalid nist state.")
 
 		self.state = new_state.upper()

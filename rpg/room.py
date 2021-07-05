@@ -7,6 +7,7 @@ customlogger = Logger("rpg/room.py")
 
 
 class Room(object):
+	ENEMYCLASSES = [Pizza, Nist]
 	def __init__(self, pos, ctx, client):
 		self.client = client
 		self.ctx = ctx
@@ -48,7 +49,8 @@ class Room(object):
 			enemy_count = random.randint(1, len(self.parties[index]))
 			enemy_party = []
 			for _ in range(enemy_count):
-				enemy_party.append(Pizza(Pizza.PIZZATYPES[random.randint(0, average_lv//3)]))
+				Enemy_class = random.choice(self.ENEMYCLASSES)
+				enemy_party.append(Enemy_class(Enemy_class.TYPES[random.randint(0, average_lv//3)]))
 
 			self.enemy_parties.append(enemy_party)
 
