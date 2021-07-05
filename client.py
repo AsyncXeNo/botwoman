@@ -5,7 +5,7 @@ import os
 import json
 
 from discord.ext import commands
-from utils import Logger
+from utils.logger import Logger
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -31,17 +31,12 @@ client = commands.Bot(command_prefix='!', intents=intents)
 @client.event
 async def on_ready():
 	customlogger.log_neutral('Logged in as {0}!'.format(client.user))
-	guild = discord.utils.find(lambda g: g.name == BESTGUILD, client.guilds)
-	customlogger.log_neutral(
-		f'{client.user} is connected to the following guild:\n'
-		f'{guild.name} (id: {guild.id})'
-	)
 
 
-# @client.event
-# async def on_command_error(ctx, error):
-# 	channel = client.get_channel(DEBUGCHANNEL)
-# 	await channel.send('```{0}```'.format(error))
+@client.event
+async def on_command_error(ctx, error):
+	channel = client.get_channel(DEBUGCHANNEL)
+	await channel.send('```{0}```'.format(error))
 
 
 # @client.event

@@ -3,12 +3,16 @@ import json
 import random
 import string
 import pickle
-from discord.ext import commands
-from discord.utils import get
 import copy
 
-from rpg_stuff import *
-from utils import *
+from discord.ext import commands
+from discord.utils import get
+from rpg.room import Room
+from rpg.player import Player
+from utils.logger import Logger
+from utils.math import Vector2
+
+customlogger = Logger("cog/rpg")
 
 
 class RPG(commands.Cog):
@@ -27,6 +31,8 @@ class RPG(commands.Cog):
 
 		self.load_players()
 		self.load_friends()
+
+		customlogger.log_neutral("Loaded rpg.")
 
 
 	# COMMANDS

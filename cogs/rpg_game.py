@@ -2,13 +2,18 @@ import discord
 import random
 from discord.ext import commands
 
-from rpg_stuff import Pizza
-from utils import Vector2
+from rpg.enemies import Pizza, Nist
+from utils.math import Vector2
+from utils.logger import Logger
+
+customlogger = Logger("cogs/rpg_game")
 
 
 class RPG_GAME(commands.Cog):
 	def __init__(self, client):
 		self.client = client
+
+		customlogger.log_neutral("Loaded rpg_game.")
 
 
 	@commands.command(description="Moves you to another random room.")

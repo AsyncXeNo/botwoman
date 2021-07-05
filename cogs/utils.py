@@ -1,15 +1,15 @@
 import discord
 import os
 import sys
-from discord.ext import commands
-
-from google_images_search import GoogleImagesSearch
-
-from better_profanity import profanity
-
-from dotenv import load_dotenv
-
 import wikipedia
+
+from discord.ext import commands
+from google_images_search import GoogleImagesSearch
+from better_profanity import profanity
+from dotenv import load_dotenv
+from utils.logger import Logger
+
+customlogger = Logger("cogs/utils")
 
 wikipedia.set_lang("en")
 
@@ -39,6 +39,8 @@ class Utils(commands.Cog):
         ]
 
         self.imgs_path = "data/imgs/"
+
+        customlogger.log_neutral("Loaded utils.")
 
     @commands.command(description="Searches wikipedia for the given query.")
     async def wiki(self, ctx, *args):

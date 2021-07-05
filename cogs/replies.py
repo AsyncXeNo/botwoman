@@ -3,7 +3,7 @@ import json
 import discord
 from discord import message
 from discord.ext import commands
-from utils import Logger
+from utils.logger import Logger
 
 customlogger = Logger("cogs/replies")
 
@@ -17,6 +17,8 @@ class Replies(commands.Cog):
             2: "END",
             3: "MIDDLE"
         }
+
+        customlogger.log_neutral("Loaded replies.")
 
     
     @commands.command(description="Adds an automatic reply. (Regex implemented. No spaces before or after `%r`.) \nSyntax-> !addreply <sentence> | <reply>")
@@ -33,8 +35,6 @@ class Replies(commands.Cog):
         if len(urls) > 0:
             await ctx.send("No links buddy.")
             return
-
-        customlogger.log_neutral(f"Adding reply: {sentence} -> {reply}")
 
         regex_type = self.regex_type[0]
 
