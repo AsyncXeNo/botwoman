@@ -98,8 +98,8 @@ class RPG_GAME(commands.Cog):
 
 
 	@commands.command(description="TEST")
-	@commands.is_owner()
 	async def test(self, ctx):
+		await ctx.send("Enjoy while you can lol this is only there for testing purposes.")
 		await self.client.get_cog("RPG").get_player_by_id(ctx.author.id).level_up(ctx)
 
 

@@ -228,4 +228,16 @@ class Player(Entity):
 
 	# tanks
 	
+	def massacre(self, ctx, enemies):
+		# Slams the enemies on the ground and pounds them, dealing physcial damage scaling with the player's stats.
+		pass
+
+	def rage(self, ctx, enemies):
+		# Channels for 1 ability. Ups armor and magic resist and builds 20 resolve.
+		pass
+
+	def land_slide(self, ctx, enemies):
+		# Causes a land slide, dealing some physcial damage to all enemies and reducing their agility. Also makes them prone to more damage by reducing their armor.
+		pass
+
 
