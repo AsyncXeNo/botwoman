@@ -16,8 +16,8 @@ class RPG_GAME(commands.Cog):
 		customlogger.log_neutral("Loaded rpg_game.")
 
 
-	@commands.command(description="Moves you to another random room.")
-	async def scout(self, ctx):
+	@commands.command(description="Shows the available attacks for your character")
+	async def myattacks(self, ctx):
 		if not self.validate():
 			await ctx.send("The game has not started yet.")
 			return 
@@ -30,9 +30,9 @@ class RPG_GAME(commands.Cog):
 			await ctx.send("You are not even registered for the game. Please wait for current game to finish and then you can register using !register.")
 			return
 
-		await ctx.send("you moved to a new room!! (bro trust me)")
-		self.client.get_cog("RPG").save_players()
-
+		player = self.client.get_cog("RPG").get_player_by_id(ctx.author.id)
+		if player:
+			await ctx.send(player.get_attack_info())
 
 	@commands.command(description="information about the room you are in the RPG.")
 	async def roominfo(self, ctx):

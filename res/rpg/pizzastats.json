@@ -4,7 +4,7 @@
 		"physical": [19, 34],
 		"magic": [19, 34],
 		"defense": [0, 4],
-		"magic_def": [0, 4],
+		"magic_def": [4, 10],
 		"agility": [75, 100],
 		"type": [0, 2],
 		"exp": [40, 60]
@@ -14,7 +14,7 @@
 		"physical": [79, 139],
 		"magic": [79, 139],
 		"defense": [13, 37],
-		"magic_def": [13, 37],
+		"magic_def": [37, 100],
 		"agility": [41, 70],
 		"type": [0, 2],
 		"exp": [150, 220]
@@ -24,7 +24,7 @@
 		"physical": [223, 457],
 		"magic": [223, 457],
 		"defense": [69, 122],
-		"magic_def": [69, 122],
+		"magic_def": [98, 169],
 		"agility": [0, 40],
 		"type": [0, 2],
 		"exp": [350, 550]
@@ -34,7 +34,7 @@
 		"physical": [1000, 1000],
 		"magic": [1000, 1000],
 		"defense": [1000, 1000],
-		"magic_def": [1000, 1000],
+		"magic_def": [2000, 2000],
 		"agility": [0, 0],
 		"type": [2, 2],
 		"exp": [2000, 3000]

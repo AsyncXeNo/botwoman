@@ -57,11 +57,6 @@ class RPG(commands.Cog):
 
 			self.dungeon[coords.x][coords.y].add_party(party[0])
 
-		for row in self.dungeon:
-			for room in row:
-				await ctx.send(room.get_info())
-
-
 		await ctx.send("All set!")
 		self.game = True
 		self.game_ctx = ctx
