@@ -66,7 +66,13 @@ class Player(Entity):
 				Attack("(ULTIMATE) Women should be treated equally!!", "You steal your enemies' stats which last with you for the next 2 turns before reverting back to normal.", Woman.women_should_be_treated_equally)
 			],
 			"ASSASSIN": [
-				Attack("SOON", "IN DEVELOPMENT", None)
+				Attack("Smokescreen", "Throws a smoke bomb on the battlefield. If your party consists of more than 2 members, you go into stealth, becoming untargetable until the enemy uses a revealing or AOE ability. Cannot be used if has more than 0 stealth. (Sets player up for other skills and gains 20 shadow stacks)", Assassin.smokescreen),
+				Attack("Blind spot", "Can only be used if below 60 stealth. Gains 20 stealth.", Assassin.blind_spot),
+				Attack("Patience", "Patience. Can only be used when stealth is equal to or above 60. Gains 40 stealth.", Assassin.patience),
+				Attack("Poison blade", "Uses 30 stealth. Throws a poison blade towards a targeted enemy, which deals a good amount of physical decaying over the next 2 turns.", Assassin.poison_blade),
+				Attack("Spawn of the Devil", "Uses 30 stealth. Sends in clones made out of darkness to the battlefield, making them waste their next ability on the clones.", Assassin.spawn_of_the_devil),
+				Attack("Ensnaring trap", "Uses 10 stealth. Lays down a trap on the battlefield. If someone steps on the trap (20% chance), they're snared and cannot do anything on the next turn. (uses the trap and gains back 20 stealth)", Assassin.ensnaring_trap),
+				Attack("Harbringer of Death: A thousand Blades..", "Everything goes silent. You come out of the darkness, unleashing 1 thousand attacks in a matter of seconds. Does en enormous amount of mixed damage. Utilizes all your stealth. Does more damage depending upon the missing health of the target. (Targeted ability)", Assassin.harbringer_of_death_a_thousand_blades)
 			],
 			"TANK": [
 				Attack("Massacre", "Slams the enemies on the ground and pounds them, dealing physcial damage scaling with the player's stats.", Tank.massacre),

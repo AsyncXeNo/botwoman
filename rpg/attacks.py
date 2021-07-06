@@ -15,7 +15,7 @@ class Assassin(object):
 
     @staticmethod
     def patience(self, enemies):
-        # Patience. Gains 40 stealth.
+        # Patience. Can only be used when stealth is equal to or above 60. Gains 40 stealth.
         pass
 
     @staticmethod
@@ -25,12 +25,12 @@ class Assassin(object):
 
     @staticmethod
     def spawn_of_the_devil(self, enemies):
-        # uses 30 stealth. Sends in clones made out of darkness to the battlefield, making them waste their next ability on the clones.
+        # Uses 30 stealth. Sends in clones made out of darkness to the battlefield, making them waste their next ability on the clones.
         pass
 
     @staticmethod
     def ensnaring_trap(self, enemies):
-        # uses 10 stealth. Lays down a trap on the battlefield. If someone steps on the trap (10% chance), they're snared and cannot do anything on the next turn. (uses the trap and gains back 20 stealth)
+        # Uses 10 stealth. Lays down a trap on the battlefield. If someone steps on the trap (10% chance), they're snared and cannot do anything on the next turn. (uses the trap and gains back 20 stealth)
         pass
 
     @staticmethod
