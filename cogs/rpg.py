@@ -36,7 +36,7 @@ class RPG(commands.Cog):
 
 
 	# COMMANDS
-		
+
 	@commands.command(description="Start RPG")
 	@commands.is_owner()
 	async def start(self, ctx):
@@ -67,13 +67,13 @@ class RPG(commands.Cog):
 	async def stop(self, ctx):
 		if not self.game:
 			await ctx.send("No game in progress anyway...")
-			return 
+			return
 
 		self.game = False
 		self.game_ctx = False
 		self.dungeon = None
 		await ctx.send("Game has ended.")
-	
+
 
 	@commands.command(description="purges friends list and all registered players")
 	@commands.is_owner()
@@ -92,7 +92,7 @@ class RPG(commands.Cog):
 		self.save_players()
 		await ctx.send("ok")
 
-	
+
 	@commands.command(description="Show registered players")
 	@commands.is_owner()
 	async def showplayers(self, ctx):
@@ -105,13 +105,13 @@ class RPG(commands.Cog):
 				players += f"{user.name}#{user.discriminator}  [{user.id}]\n"
 			else:
 				await ctx.send(f"Cannot find user with id {player.user_id}")
-		
+
 		if players != "":
 			await ctx.send(players)
 		else:
 			await ctx.send("No players regsitered.")
 
-	
+
 	@commands.command(description="Show list of friends")
 	@commands.is_owner()
 	async def showfriends(self, ctx):
@@ -138,6 +138,17 @@ class RPG(commands.Cog):
 			return
 
 		await ctx.send(response)
+
+
+	@commands.command(description="Shows the available attacks for your character")
+	async def myattacks(self, ctx):
+		if not self.is_registered(ctx.author.id):
+			await ctx.send("You are not even registered for the game. Please wait for current game to finish and then you can register using !register.")
+			return
+
+		player = self.get_player_by_id(ctx.author.id)
+		if player:
+			await ctx.send(player.get_attack_info())
 
 
 	@commands.command(description="Shows info about a player.")
@@ -226,7 +237,7 @@ class RPG(commands.Cog):
 
 	@commands.command(description="Leave whichever party you are a part of.")
 	async def leaveparty(self, ctx):
-		
+
 		if self.game:
 			await ctx.send("A game is currently in progress!")
 			return
@@ -352,7 +363,7 @@ class RPG(commands.Cog):
 		if not registered:
 			await ctx.send("Register first using !register.")
 			return
-		
+
 		options = [option.title() for option in Player.PLAYERCLASSES]
 		options_str = " / ".join(options)
 		await ctx.send("Change your class. (Mage / Fighter / Assassin / Healer)")
@@ -425,7 +436,7 @@ class RPG(commands.Cog):
 			return msg.channel == ctx.channel and msg.author == user_to_add
 
 		msg = None
-		
+
 		for i in range(3):
 
 			await ctx.send(f"{user_to_add.mention} {ctx.author.name} would like to be friends with you. Do you wanna accept? (Y/N)")
@@ -447,13 +458,13 @@ class RPG(commands.Cog):
 				return
 
 		if msg.content.lower() == "n":
-			
+
 			await ctx.send(f"{ctx.author.mention} {user_to_add.name} does not want to be friends with you. Cry.")
 
 		elif msg.content.lower() == "y":
 			await ctx.send(f"{ctx.author.mention} is now friends with {user_to_add.mention}!")
 			self.save_friend_pair(author_player.user_id, player_to_add.user_id)
-		
+
 
 	@commands.command(description="Unfriend another player.")
 	async def unfriend(self, ctx, member: discord.Member):
@@ -464,10 +475,10 @@ class RPG(commands.Cog):
 		if not self.is_registered(ctx.author.id):
 			await ctx.send("You are not registered for the RPG. Please register using !register in order to make friends.")
 			return
-			
+
 		self_id = ctx.author.id
 		unfriend_id = member.id
-		 
+
 		friends = False
 
 		await ctx.send(f"Are you sure you don't wanna be friends with {self.get_player_by_id(unfriend_id).name} anymore? (Y/N)")
@@ -592,15 +603,15 @@ class RPG(commands.Cog):
 
 	def load_players(self):
 		with open(self.playerfilepath, "rb") as f:
-			self.players = pickle.loads(f.read()) 
+			self.players = pickle.loads(f.read())
 
-	
+
 	def generate_id(self):
 		length  = 8
 
 		with open(self.idsfilepath, "r") as f:
 			generated = json.load(f)
-			
+
 		gen = ''.join(random.choices(string.ascii_uppercase, k=length))
 
 		while gen in generated:
@@ -613,6 +624,6 @@ class RPG(commands.Cog):
 
 		return gen
 
-	
+
 def setup(client):
 	client.add_cog(RPG(client))
