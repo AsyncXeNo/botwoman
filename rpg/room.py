@@ -83,7 +83,7 @@ class Room(object):
 
 		# very end
 		index = self.parties.index(party)
-		self.parties.remove(self.parties[index])
-		self.enemy_parties.remove(self.enemy_parties[index])
+		self.parties.remove(self.parties.index(party))
+		self.enemy_parties.remove(self.parties.index(party))
 
 		await self.client.get_cog("RPG_GAME").move_party(self.ctx, party)

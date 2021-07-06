@@ -7,19 +7,23 @@ class Battle_Manager(object):
         self.room = room
         self.ability_effects = [
             {
-                "name": "dummy",
+                "name": "poison",
                 "turns": 0,
-                "affect": "players", # or "enemies"
+                "affects": [copy.copy(self.room.client.get_cog("RPG").get_party_by_owner_id(650999961214779392))], # list of everyone it affects
                 "effects": {
-                    "physcial damage": 0,
-                    "magic damage": 0,
-                    "physcial defense": 0,
-                    "magic defense": 0,
-                    "agility": 0,
-                    "statuses": ["STUNNED", "POLYMORPHED", "SNARED"]
+                    "health": 100,
+                    "physcial damage": 1331,
+                    "magic damage": 1276,
+                    "physcial buff": 1234,
+                    "magic buff": -2156,
+                    "physcial defense": -113,
+                    "magic defense": 123,
+                    "agility": 0.5
                 }
             }
         ]
+
+        self.battles = {}
 
     def clean_up(self):
         for effect in self.ability_effects:
@@ -29,6 +33,28 @@ class Battle_Manager(object):
     def start_battle(self, index):
         player_party = copy.copy(self.room.parties[index])
         enemy_party = self.room.enemyparties[index]
+
+        self.battles[player_party[0]] = {
+            "players": player_party,
+            "enemies": enemy_party,
+            "ability_effects": [
+                {
+                    "name": "poison",
+                    "turns": 0,
+                    "affects": [copy.copy(self.room.client.get_cog("RPG").get_party_by_owner_id(650999961214779392))], # list of everyone it affects
+                    "effects": {
+                        "health": 100,
+                        "physcial damage": 1331,
+                        "magic damage": 1276,
+                        "physcial buff": 1234,
+                        "magic buff": -2156,
+                        "physcial defense": -113,
+                        "magic defense": 123,
+                        "agility": 0.5
+                    }
+                }
+            ]
+        }
 
         while not self.check_if_event_over(player_party, enemy_party):
             abilities = {}

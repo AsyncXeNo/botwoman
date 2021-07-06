@@ -34,3 +34,45 @@ class Entity(object):
 
 	def get_stat_info(self):
 		return f"*MAX HP ->* `{self.maxhp}`\n*PHYSICAL DAMAGE ->* `{self.physical}`\n*MAGICAL DAMAGE ->* `{self.magic}`\n*PHYSICAL DEFENSE ->* `{self.defense}`\n*MAGIC DEFENSE ->* `{self.magic_def}`\n*AGILITY ->* `{self.agility}\n`"
+
+
+	# imp
+
+	def gain_hp(self, hp):
+		pass
+
+	def deal_physcial(self, dmg):
+		pass
+
+	def deal_magical(self, dmg):
+		pass
+
+	def buff_physcial(self, buff):
+		pass
+
+	def debuff_physcial(self, debuff):
+		pass
+
+	def buff_magical(self, buff):
+		pass
+
+	def debuff_magical(self, debuff):
+		pass
+
+	def buff_armor(self, buff):
+		pass
+
+	def debuff_armor(self, debuff):
+		pass
+
+	def buff_mr(self, buff):
+		pass
+
+	def debuff_mr(self, debuff):
+		pass
+
+	def buff_agility(self, buff):
+		pass
+
+	def debuff_agility(self, debuff):
+		pass
