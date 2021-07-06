@@ -159,7 +159,7 @@ class Player(Entity):
 			self.check_if_level_up(ctx)
 
 	def __str__(self):
-		return f"Name- {self.name}\nId- {self.user_id}\nClass- {self.character_class}\n"
+		return f"**{self.name}**"
 
 	def get_info(self):
 		return f"{self.__str__()}\n{self.get_stat_info()}"

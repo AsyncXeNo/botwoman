@@ -12,7 +12,7 @@ class Room(object):
 	def __init__(self, pos, ctx, client):
 		self.client = client
 		self.ctx = ctx
-		self.battle_manager = Battle_Manager()
+		self.battle_manager = Battle_Manager(self)
 		self.pos = pos
 		self.parties = []
 		self.enemy_parties = []
@@ -79,7 +79,7 @@ class Room(object):
 		await self.ctx.send("PRETEND THIS IS AN EVENT PLS OK GOOD")
 
 		customlogger.log_neutral(f"Party index - {index}")
-		self.battle_manager.start_battle(index)
+		await self.battle_manager.start_battle(index)
 
 		# very end
 		index = self.parties.index(party)

@@ -41,16 +41,16 @@ class Entity(object):
 	def gain_hp(self, hp):
 		pass
 
-	def deal_physcial(self, dmg):
+	def deal_physical(self, dmg):
 		pass
 
 	def deal_magical(self, dmg):
 		pass
 
-	def buff_physcial(self, buff):
+	def buff_physical(self, buff):
 		pass
 
-	def debuff_physcial(self, debuff):
+	def debuff_physical(self, debuff):
 		pass
 
 	def buff_magical(self, buff):
