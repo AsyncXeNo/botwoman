@@ -366,7 +366,7 @@ class RPG(commands.Cog):
 
 		options = [option.title() for option in Player.PLAYERCLASSES]
 		options_str = " / ".join(options)
-		await ctx.send("Change your class. (Mage / Fighter / Assassin / Healer)")
+		await ctx.send(f"Change your class. ({options_str})")
 
 		def check(msg):
 			return msg.author == ctx.author and msg.channel == ctx.channel
@@ -378,11 +378,11 @@ class RPG(commands.Cog):
 			return
 
 		else:
-			new_class = Player.PLAYERCLASSES.index(msg.content.upper())
+			new_class_index = Player.PLAYERCLASSES.index(msg.content.upper())
 
 		for player in self.players:
 			if player.user_id == user_id:
-				player.character_class = new_class
+				player.character_class = player.PLAYERCLASSES[new_class_index]
 
 		self.save_players()
 
