@@ -5,30 +5,12 @@ from rpg.turn import Turn
 class Battle_Manager(object):
     def __init__(self, room):
         self.room = room
-        self.ability_effects = [
-            {
-                "name": "poison",
-                "turns": 0,
-                "affects": [copy.copy(self.room.client.get_cog("RPG").get_party_by_owner_id(650999961214779392))], # list of everyone it affects
-                "effects": {
-                    "health": 100,
-                    "physcial damage": 1331,
-                    "magic damage": 1276,
-                    "physcial buff": 1234,
-                    "magic buff": -2156,
-                    "physcial defense": -113,
-                    "magic defense": 123,
-                    "agility": 0.5
-                }
-            }
-        ]
-
         self.battles = {}
 
-    def clean_up(self):
-        for effect in self.ability_effects:
+    def clean_up(self, player_token):
+        for effect in self.battles[player_token]["ability_effects"]:
             if effect["turns"] == 0:
-                self.ability_effects.remove(effect)
+                self.battles[player_token]["ability_effects"].remove(effect)
 
     async def start_battle(self, index):
         player_party = copy.copy(self.room.parties[index])
@@ -40,7 +22,7 @@ class Battle_Manager(object):
             "ability_effects": [
                 {
                     "name": "poison",
-                    "turns": 0,
+                    "turns": 1,
                     "affects": copy.copy(self.room.client.get_cog("RPG").get_party_by_owner_id(650999961214779392)), # list of everyone it affects
                     "effects": {
                         "health": 100,
@@ -56,9 +38,12 @@ class Battle_Manager(object):
             ]
         }
 
+        turn = 0
         while not self.check_if_event_over(player_party, enemy_party):
+            turn += 1
+            await self.room.ctx.send(f"Turn {turn}")
             abilities = {}
-            self.clean_up()
+            self.clean_up(player_party[0])
 
             # for player in player_party:
             #     abilities[player] = self.room.client.get_cog("RPG_GAME").prompt_player_for_attack(player)

@@ -7,11 +7,11 @@ class Turn(object):
 
     async def start_turn(self, abilities, player_party, enemy_party):
         await self.handle_effects(player_party[0])
-        for player in player_party:
-            abilities[player](self.battle_manager.room.ctx, enemy_party, self.battle_manager.ability_effects)
-
-        for enemy in enemy_party:
-            abilities[enemy](self.battle_manager.room.ctx, player_party, self.battle_manager.ability_effects)
+        # for player in player_party:
+        #     abilities[player](self.battle_manager.room.ctx, enemy_party, self.battle_manager.ability_effects)
+        #
+        # for enemy in enemy_party:
+        #     abilities[enemy](self.battle_manager.room.ctx, player_party, self.battle_manager.ability_effects)
 
     async def handle_effects(self, player_token):
         ctx = self.battle_manager.room.ctx
@@ -73,5 +73,3 @@ class Turn(object):
                     else:
                         await ctx.send(f"{entity} lost {abs(ag)} agility due to {effect['name']}.")
                         entity.debuff_agility(abs(ag))
-
-        await ctx.send("The program is supposed to break now")
