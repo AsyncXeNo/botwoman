@@ -9,6 +9,7 @@ class Entity(object):
 	ENTITYTYPES = ["PHYSICAL", "MAGICAL", "MIXED"]
 	def __init__(self, maxhp, entitytype, physical, magic, def_, mag_def, agility):
 		self.maxhp = maxhp
+		self.hp = self.maxhp
 		self.physical = physical
 		self.magic = magic
 		self.defense = def_

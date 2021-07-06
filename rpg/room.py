@@ -1,6 +1,7 @@
 import random
 
 from rpg.enemies import Pizza, Nist
+from rpg.battle_manager import Battle_Manager
 from utils.logger import Logger
 
 customlogger = Logger("rpg/room.py")
@@ -11,6 +12,7 @@ class Room(object):
 	def __init__(self, pos, ctx, client):
 		self.client = client
 		self.ctx = ctx
+		self.battle_manager = Battle_Manager()
 		self.pos = pos
 		self.parties = []
 		self.enemy_parties = []
@@ -46,7 +48,7 @@ class Room(object):
 			average_lv = 10
 
 		if not len(self.parties[index]) == 0:
-			enemy_count = random.randint(1, len(self.parties[index]))
+			enemy_count = len(self.parties[index])
 			enemy_party = []
 			for _ in range(enemy_count):
 				Enemy_class = random.choice(self.ENEMYCLASSES)
@@ -76,9 +78,8 @@ class Room(object):
 		await self.ctx.send(f"`PARTY - {', '.join([player.name for player in party])}` is going to fight `PARTY - {', '.join([pizza.get_monster_info() for pizza in self.enemy_parties[index]])}`!")
 		await self.ctx.send("PRETEND THIS IS AN EVENT PLS OK GOOD")
 
-
-
-
+		customlogger.log_neutral(f"Party index - {index}")
+		self.battle_manager.start_battle(index)
 
 		# very end
 		index = self.parties.index(party)

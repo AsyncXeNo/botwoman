@@ -53,17 +53,15 @@ class Pizza(Entity):
 
 		self.state = new_state.upper()
 
-	async def attack(self, ctx, players):
-		if self.state.upper() == "STUNNED":
-			await ctx.send(f"{self.get_monster_info()} is currently ***{self.state}*** and cannot attack!")
-			return
+	def get_random_attack(self, players):
+		if self.state.upper() in ["STUNNED", "SNARED", "POLYMORPHED"]:
+			return f"{self.get_monster_info()} is currently **{self.state}** and cannot attack."
 
 		options = self.attacks[self.state]
 		attack = random.choice(options)
 		attack(ctx, players)
-		await ctx.send(attack)
 
-	async def death(self, ctx, players):
+	async def death(self, ctx, players, effects):
 		players = [f"**{player.name}**" for player in players]
 		if len(players) > 2:
 			await ctx.send(f"{(', ').join(players[:-1])} and {players[-1]} have slain {self.get_monster_info()}! All of them gained {self.exp_gives//len(players)} exp points.")
@@ -77,53 +75,53 @@ class Pizza(Entity):
 
 	# ATTACKS
 
-	def degeneracy_blade(self, ctx, players):
+	async def degeneracy_blade(self, ctx, players, effects):
 		# removes player(s) agility by making them fat
 		pass
 
-	def waifu_smash(self, ctx, players):
+	async def waifu_smash(self, ctx, players, effects):
 		# summons waifu who attacks the player dealing magic damage (magic only attack)
 		pass
 
-	def horny_aura(self, ctx, players):
+	async def horny_aura(self, ctx, players, effects):
 		# stuns player(s) for 1 move cuz of horniness
 		pass
 
-	def pizza_box(self, ctx, players):
+	async def pizza_box(self, ctx, players, effects):
 		# summons massive cardboard box to protect itself for the next 2 turns(ups physical defense)
 		pass
 
-	def cheese_spread(self, ctx, players):
+	async def cheese_spread(self, ctx, players, effects):
 		# spreads lots of cheese over himself (ups def and mr)
 		pass
 
-	def greece_shot(self, ctx, players):
+	async def greece_shot(self, ctx, players, effects):
 		# throws greece balls at player(s) cuz pizza never showers, doing physical damage
 		pass
 
-	def roasted_to_perfection(self, ctx, players):
+	async def roasted_to_perfection(self, ctx, players, effects):
 		# converts the room into an oven dealing more and more physical damage over 3 turns
 		pass
 
-	def master_of_comedy(self, ctx, players):
+	async def master_of_comedy(self, ctx, players, effects):
 		# makes the player(s) cringe incredibly hard with his bad joke (lowers player defense (both physical and magical))
 		pass
 
-	def flex(self, ctx, players):
+	async def flex(self, ctx, players, effects):
 		# flexes his pen spinning techniques, sadly impressing nobody. (lowers own def and mr)
 		pass
 
-	def retardation(self, ctx, players):
+	async def retardation(self, ctx, players, effects):
 		# makes the player(s) retarded. The player(s) use a random ability in their next turn.
 		pass
 
-	def i_can_totally_do_this(self, ctx, players):
+	async def i_can_totally_do_this(self, ctx, players, effects):
 		# charges towards the player(s) looking incredibly cool. Trips on a banana peel and loses half remaining hp.
 		pass
 
 
 class Nist(Entity):
-	with open("res/rpg/pizzastats.json", "r") as f:
+	with open("res/rpg/niststats.json", "r") as f:
 		STATS = json.load(f)
 
 	TYPES = ["SMALL", "MEDIUM", "LARGE", "FEMI(NIST)"]
@@ -168,7 +166,7 @@ class Nist(Entity):
 
 		self.state = new_state.upper()
 
-	async def attack(self, ctx, players):
+	async def attack(self, ctx, players, effects):
 		if self.state.upper() == "STUNNED":
 			await ctx.send(f"{self.get_monster_info()} is currently ***{self.state}*** and cannot attack!")
 			return
@@ -178,7 +176,7 @@ class Nist(Entity):
 		attack(ctx, players)
 		await ctx.send(attack)
 
-	async def death(self, ctx, players):
+	async def death(self, ctx, players, effects):
 		players = [f"**{player.name}**" for player in players]
 		if len(players) > 2:
 			await ctx.send(f"{(', ').join(players[:-1])} and {players[-1]} have slain {self.get_monster_info()}! All of them gained {self.exp_gives//len(players)} exp points.")
@@ -192,42 +190,42 @@ class Nist(Entity):
 
 	# ATTACKS
 
-	def snip_snip(self, ctx, players):
+	async def snip_snip(self, ctx, players, effects):
 		# nist cuts off a random percentage of the player(s) health (upto a limit)
 		pass
 
-	def a_new_persona(self, ctx, players):
+	async def a_new_persona(self, ctx, players, effects):
 		# nist changes his personality, confusing everybody and lowering their defenses (def and mr)
 		pass
 
-	def did_i_just_catch_you_pirating(self, ctx, players):
+	async def did_i_just_catch_you_pirating(self, ctx, players, effects):
 		# starts a rant against pirating, dealing a shit ton of mixed damage to all players (also increases agility)
 		pass
 
-	def i_am_the_hentai_man(self, ctx, players):
+	async def i_am_the_hentai_man(self, ctx, players, effects):
 		# nist shows the players random hentai from the interwebs, distracting them. (decreses physcial and magic damage and agility of players)
 		pass
 
-	def guys_see_my_edit_guys(self, ctx, players):
+	async def guys_see_my_edit_guys(self, ctx, players, effects):
 		# shows the players his anime edits, embarassing himself cuz they turned out worse than the actual images. (loses half remaining hp)
 		pass
 
-	def fucking_feminists(self, ctx, players):
+	async def fucking_feminists(self, ctx, players, effects):
 		# goes on a rant about how feminists are stupid and how he hates women. (gains shit ton of armor and mr) (if player is of class woman they take a huge percentage of their max health as damage.)
 		pass
 
-	def editor_shield(self, ctx, players):
+	async def editor_shield(self, ctx, players, effects):
 		# edits a shield on his pc and uses it to defend himself (bonus armor for the next 2 turns)
 		pass
 
-	def i_have_a_girlfriend_btw(self, ctx, players):
+	async def i_have_a_girlfriend_btw(self, ctx, players, effects):
 		# starts talking about his girlfriend for absolutely no reason. Makes the players sleepy and miss a turn.
 		pass
 
-	def idiot_complains_about_you(self, ctx, players):
+	async def idiot_complains_about_you(self, ctx, players, effects):
 		# nist attemps to roast the players. 50% chance of dealing physcial damage to players.
 		pass
 
-	def horrible_mic(self, ctx, players):
+	async def horrible_mic(self, ctx, players, effects):
 		# nist joins the vc, making everyone's ears bleed cuz of his god aweful mic (deals mixed damage)
 		pass
