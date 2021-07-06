@@ -141,7 +141,7 @@ class RPG(commands.Cog):
 
 
 	@commands.command(description="Shows the available attacks for your character")
-	async def myattacks(self, ctx):
+	async def abilities(self, ctx):
 		if not self.is_registered(ctx.author.id):
 			await ctx.send("You are not even registered for the game. Please wait for current game to finish and then you can register using !register.")
 			return

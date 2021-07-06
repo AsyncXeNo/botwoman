@@ -82,7 +82,7 @@ class Fighter(object):
 class Mage(object):
     @staticmethod
     def polymorph(ctx, enemies):
-        # Requires 50 energy stacks. Polymorphs a single enemy (if used against a party with multiple enemies, it chooses the enemy at random). They cannot do anything in their next turn and take increases damage from all sources.
+        # Requires 50 energy stacks. Polymorphs the enemies for 1 turn. They cannot do anything in their next turn and take increases damage from all sources.
         pass
 
     @staticmethod

@@ -38,8 +38,24 @@ class Player(Entity):
 		self.room = None
 
 		self.attacks = {
-			"MAGE": [],
-			"FIGHTER": [],
+			"MAGE": [
+				Attack("Polymorph", "Requires 40 energy stacks. Polymorphs the enemies for 1 turn. They cannot do anything in their next turn and take increases damage from all sources.", Mage.polymorph),
+				Attack("Demon summon!", "Summons demons directly from hell (1 demon per 10 energy stack) each doing magic damage which scales with the player's stats.", Mage.demon_summon),
+				Attack("Magic missiles", "Throws a bunch of magic missiles towards enemies, dealing magic damage which scales with the player's stats. (doesn't use stacks)", Mage.magic_missiles),
+				Attack("God's grace...", "Channels for the next turn, restoring 20 energy stacks gaining a magical shield for the duration which absorbs all kinds of damage. Amount of damage absorbed scales with the player's magic damage.", Mage.gods_grace),
+				Attack("Blizzard", "Requires 30 stacks. Stuns the enemies for 1 turn.", Mage.blizzard),
+				Attack("Judgement", "Requires 80 energy stacks. You send your enemies for judgement. There is a 50% chance they come out unharmed. If not, they take 40% max health magic damage and you restore 40 energy stacks", Mage.judgement),
+				Attack("Dark Vortex", "Sacrifice 95% of your remaining HP. Summons a whirling mass of dark energy, ripping through all resistances and doing crazy amounts of magical damage, scaling with energy stacks, the amount of hp sacrificed and player's stats (uses all energy stacks).", Mage.dark_vortex)
+			],
+			"FIGHTER": [
+				Attack("Mantis Style", "Northern Praying Mantis is a style of Chinese martial arts, sometimes called Shandong Praying Mantis after its province of origin. Increases armor and magic resist by a large amount.", Fighter.mantis_style),
+				Attack("Monkey Style", "Monkey Kung Fu or Hóu Quán is a Chinese martial art which utilizes ape or monkey-like movements as part of its technique. Increases agility by a large amount.", Fighter.monkey_style),
+				Attack("Viper Style", "The green bamboo viper is the snake style taught in the United States by Grandmaster Wing Loc Johnson Ng. Deals physcial damage as poison for the next 2 turns (including current turn).", Fighter.viper_style),
+				Attack("Tiger Style", "Deals physcial damage to the enemies, scaling with player's stats.", Fighter.tiger_style),
+				Attack("Take it all!", "Suppresses the feeling of pain, reducing the damage taken by 40%. Also restores 20 fury.", Fighter.take_it_all),
+				Attack("Furiosity", "Sacrifices 20% of own maxhp to gain 40 fury.", Fighter.furiosity),
+				Attack("Dragon Style!", "Takes 60% reduced damage for the next 2 turns. After that, unleases all the damage taken (increased based on fury) to the enemies as magic damage.", Fighter.dragon_style)
+			],
 			"WOMAN": [
 				Attack("Seduction", "Seduces everyone in the room. Increases physcial and magic damage for allies and decreases defense and magic resist for enemies.", Woman.seduction),
 				Attack("Shout for no reason", "Shouts for literally no reason, confusing the enemies, reducing their agility and lowering their hostility by 1. (MADDENED -> NORMAL or NORMAL -> RELAXED)", Woman.shout_for_no_reason),
@@ -50,7 +66,15 @@ class Player(Entity):
 				Attack("(ULTIMATE) Women should be treated equally!!", "You steal your enemies' stats which last with you for the next 2 turns before reverting back to normal.", Woman.women_should_be_treated_equally)
 			],
 			"HEALER": [],
-			"TANK": []
+			"TANK": [
+				Attack("Massacre", "Slams the enemies on the ground and pounds them, dealing physcial damage scaling with the player's stats.", Tank.massacre),
+				Attack("Rage", "Channels for 1 ability. Ups armor and magic resist and builds 20 resolve.", Tank.rage),
+				Attack("Land slide", "", Tank.land_slide),
+				Attack("Taunt", "", Tank.taunt),
+				Attack("Intimidate", "", Tank.intimidate),
+				Attack("Confrontation!", "", Tank.confrontation),
+				Attack("Warcry", "", Tank.war_cry)
+			]
 		}
 
 		self.default_state = "NORMAL"
