@@ -1,4 +1,5 @@
 import random
+import os
 
 
 class Assassin(object):
@@ -7,23 +8,32 @@ class Assassin(object):
         # Throws a smoke bomb on the battlefield. If your party consists of more than 2 members, you go into stealth, becoming untargetable until the enemy uses a revealing or AOE ability. Cannot be used if has more than 0 stealth. (Sets player up for other skills and gains 20 shadow stacks)
         pass
 
+    @staticmethod
     def blind_spot(self, enemies):
         # Can only be used if below 60 stealth. Gains 20 stealth.
         pass
 
+    @staticmethod
     def patience(self, enemies):
         # Patience. Gains 40 stealth.
         pass
 
+    @staticmethod
     def poison_blade(self, enemies):
         # Uses 30 stealth. Throws a poison blade towards a targeted enemy, which deals a good amount of physical decaying over the next 2 turns.
         pass
 
+    @staticmethod
     def spawn_of_the_devil(self, enemies):
         # uses 30 stealth. Sends in clones made out of darkness to the battlefield, making them waste their next ability on the clones.
         pass
 
+    @staticmethod
+    def ensnaring_trap(self, enemies):
+        # uses 10 stealth. Lays down a trap on the battlefield. If someone steps on the trap (10% chance), they're snared and cannot do anything on the next turn. (uses the trap and gains back 20 stealth)
+        pass
 
+    @staticmethod
     def harbringer_of_death_a_thousand_blades(self, enemies):
         # Everything goes silent. You come out of the darkness, unleashing 1 thousand attacks in a matter of seconds. Does en enormous amount of mixed damage. Utilizes all your stealth. Does more damage depending upon the missing health of the target. (Targeted ability)
         pass

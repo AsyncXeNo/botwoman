@@ -20,7 +20,7 @@
 		"exp": [120, 120]
 	},
 	"WOMAN": {
-		"maxhp": [90, 90],
+		"maxhp": [85, 85],
 		"physical": [1, 1],
 		"magic": [1, 1],
 		"defense": [2, 2],
@@ -29,14 +29,14 @@
 		"type": [2, 2],
 		"exp": [120, 120]
 	},
-	"HEALER": {
-		"maxhp": [90, 90],
-		"physical": [0, 0],
-		"magic": [15, 15],
+	"ASSASSIN": {
+		"maxhp": [50, 50],
+		"physical": [45, 45],
+		"magic": [45, 45],
 		"defense": [3, 3],
 		"magic_def": [3, 3],
-		"agility": [65, 65],
-		"type": [1, 1],
+		"agility": [90, 90],
+		"type": [2, 2],
 		"exp": [120, 120]
 	},
 	"TANK": {

@@ -17,7 +17,7 @@ class Player(Entity):
 	with open("res/rpg/playerstats.json", "r") as f:
 		STATS = json.load(f)
 
-	PLAYERCLASSES = ["MAGE", "FIGHTER", "WOMAN", "HEALER", "TANK"]
+	PLAYERCLASSES = ["MAGE", "FIGHTER", "WOMAN", "ASSASSIN", "TANK"]
 	PLAYERSTATES = ["NORMAL", "STUNNED"]
 	def __init__(self, user_id, character_class, name):
 		self.user_id = user_id
@@ -65,7 +65,7 @@ class Player(Entity):
 				Attack("Pepper Spray", "Pepper sprays the enemies, blinding them and decresing their agility to 0 for 1 turn. Also does some mixed damage scaling with the player's stats.", Woman.pepper_spray),
 				Attack("(ULTIMATE) Women should be treated equally!!", "You steal your enemies' stats which last with you for the next 2 turns before reverting back to normal.", Woman.women_should_be_treated_equally)
 			],
-			"HEALER": [
+			"ASSASSIN": [
 				Attack("SOON", "IN DEVELOPMENT", None)
 			],
 			"TANK": [

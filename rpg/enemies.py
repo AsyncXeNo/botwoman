@@ -13,7 +13,7 @@ class Pizza(Entity):
 		STATS = json.load(f)
 
 	TYPES = ["SMALL", "MEDIUM", "LARGE", "THE EMBODIMENT OF DEGENERACY"]
-	STATES = ["NORMAL", "MADDENED", "RELAXED", "STUNNED"]
+	STATES = ["NORMAL", "MADDENED", "RELAXED", "STUNNED", "SNARED", "POLYMORPHED"]
 
 	def __init__(self, pizzatype):
 		self.pizzatype = pizzatype.upper()
@@ -127,8 +127,8 @@ class Nist(Entity):
 		STATS = json.load(f)
 
 	TYPES = ["SMALL", "MEDIUM", "LARGE", "FEMI(NIST)"]
-	STATES = ["NORMAL", "MADDENED", "RELAXED", "STUNNED"]
-	
+	STATES = ["NORMAL", "MADDENED", "RELAXED", "STUNNED", "SNARED", "POLYMORPHED"]
+
 	def __init__(self, nisttype):
 		self.nisttype = nisttype.upper()
 		self.validate()
@@ -136,7 +136,7 @@ class Nist(Entity):
 		self.stats = copy.copy(self.STATS[self.nisttype])
 		for stat in self.stats:
 			self.stats[stat] = random.randint(self.stats[stat][0], self.stats[stat][1])
-		
+
 		Entity.__init__(self, self.stats["maxhp"], self.stats["type"], self.stats["physical"], self.stats["magic"],self.stats["defense"], self.stats["magic_def"], self.stats["agility"])
 
 		self.exp_gives = self.stats["exp"]
@@ -177,7 +177,7 @@ class Nist(Entity):
 		attack = random.choice(options)
 		attack(ctx, players)
 		await ctx.send(attack)
-	
+
 	async def death(self, ctx, players):
 		players = [f"**{player.name}**" for player in players]
 		if len(players) > 2:
@@ -189,7 +189,7 @@ class Nist(Entity):
 		else:
 			await ctx.send(f"{players[0]} has slain {self.get_monster_info()}! They gained {self.exp_gives} experience points.")
 
-		
+
 	# ATTACKS
 
 	def snip_snip(self, ctx, players):
@@ -197,7 +197,7 @@ class Nist(Entity):
 		pass
 
 	def a_new_persona(self, ctx, players):
-		# nist changes his personality, confusing everybody and lowering their defenses (def and mr)	
+		# nist changes his personality, confusing everybody and lowering their defenses (def and mr)
 		pass
 
 	def did_i_just_catch_you_pirating(self, ctx, players):
