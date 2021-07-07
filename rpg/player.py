@@ -91,9 +91,17 @@ class Player(Entity):
 		self.stacks = 0
 		self.max_stacks = 100
 
+	def get_attacks(self):
+		if self.state == "STUNNED":
+			return f"**{self.name}** didn't use any ability because they are **{self.state}**!"
+		if self.level == 10:
+			return self.attacks[self.character_class]
+
+		return self.attacks[self.character_class][:-1]
+
 	def get_attack_info(self):
 		response = ""
-		attacks = self.attacks[self.character_class]
+		attacks = copy.copy(self.attacks[self.character_class])
 
 		if self.level < 10 and len(attacks) == 7:
 			attacks = attacks[:-1]

@@ -78,11 +78,60 @@ class RPG_GAME(commands.Cog):
 
 		await ctx.send("Moved to a new room.")
 
+	async def prompt_player_for_attack(self, ctx, player):
+		user = self.client.get_user(player.user_id)
+		abilities = player.get_attacks()
+
+		if type(abilities) == str:
+			await ctx.send(f"{player.name} cannot choose any ability cuz they are {player.state}")
+			return abilities
+
+		while True:
+			await ctx.send(f"{user.mention} please choose your ability. You can either write the name of the ability or the number in front of the ability. (!abilities to see your abilities)")
+
+			def check(msg):
+				return msg.author == user and msg.channel == ctx.channel
+
+			msg = await self.client.wait_for("message", check=check)
+
+			if msg.content == "!abilities":
+				continue
+
+			try:
+				msg = int(msg.content)
+			except Exception as e:
+				msg = msg.content
+
+			ability = None
+
+			if type(msg) == int:
+				if msg < 1:
+					await ctx.send("Invalid ability. Did you accidentally type the wrong number? (!abilities to see your abilities)")
+					continue
+				try:
+					ability = abilities[msg-1]
+					break
+				except Exception as e:
+					await ctx.send("Invalid ability. Did you accidentally type the wrong number? (!abilities to see your abilities)")
+					continue
+
+			elif msg.lower() in [ab.name.lower() for ab in abilities]:
+				ability = abilities[[ab.name.lower() for ab in abilities].index(msg.lower())]
+				break
+
+			await ctx.send("Invalid ability. Did you accidentally type the wrong name?")
+
+		if not ability:
+			raise Exception("ability var is None (shouldn't be possible)")
+
+		return ability
+
+
 
 	@commands.command(description="TEST")
 	async def test(self, ctx):
-		await ctx.send("Enjoy while you can lol this is only there for testing purposes.")
-		await self.client.get_cog("RPG").get_player_by_id(ctx.author.id).level_up(ctx)
+		player = self.client.get_cog("RPG").get_player_by_id(ctx.author.id)
+		await self.prompt_player_for_attack(ctx, player)
 
 
 def setup(client):

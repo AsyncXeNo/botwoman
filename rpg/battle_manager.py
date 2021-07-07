@@ -19,23 +19,7 @@ class Battle_Manager(object):
         self.battles[player_party[0]] = {
             "players": player_party,
             "enemies": enemy_party,
-            "ability_effects": [
-                {
-                    "name": "poison",
-                    "turns": 1,
-                    "affects": copy.copy(self.room.client.get_cog("RPG").get_party_by_owner_id(650999961214779392)), # list of everyone it affects
-                    "effects": {
-                        "health": 100,
-                        "physical damage": 1331,
-                        "magic damage": 1276,
-                        "physical buff": 1234,
-                        "magic buff": -2156,
-                        "physical defense": -113,
-                        "magic defense": 123,
-                        "agility": 0.5
-                    }
-                }
-            ]
+            "ability_effects": []
         }
 
         turn = 0
@@ -45,15 +29,15 @@ class Battle_Manager(object):
             abilities = {}
             self.clean_up(player_party[0])
 
-            # for player in player_party:
-            #     abilities[player] = self.room.client.get_cog("RPG_GAME").prompt_player_for_attack(player)
-            #     if not abilities[player]:
-            #         raise Exception("Player did not return an attack, which should not be possible.")
-            #
-            # for enemy in enemy_party:
-            #     abilities[enemy] = enemy.get_random_attack()
-            #     if not abilities[enemy]:
-            #         raise Exception("Enemy did not return an attack, which should not be possible.")
+            for player in player_party:
+                abilities[player] = await self.room.client.get_cog("RPG_GAME").prompt_player_for_attack(self.room.ctx, player)
+                if not abilities[player]:
+                    raise Exception("Player did not return an attack, which should not be possible.")
+            
+            for enemy in enemy_party:
+                abilities[enemy] = enemy.get_random_attack()
+                if not abilities[enemy]:
+                    raise Exception("Enemy did not return an attack, which should not be possible.")
 
             await Turn(self).start_turn(abilities, player_party, enemy_party)
 

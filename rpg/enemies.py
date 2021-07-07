@@ -53,13 +53,15 @@ class Pizza(Entity):
 
 		self.state = new_state.upper()
 
-	def get_random_attack(self, players):
+	def get_random_attack(self):
 		if self.state.upper() in ["STUNNED", "SNARED", "POLYMORPHED"]:
-			return f"{self.get_monster_info()} is currently **{self.state}** and cannot attack."
+			state = self.state
+			self.change_state("NORMAL")
+			return f"**{self.get_monster_info()}** is currently **{state}** and cannot attack!"
 
 		options = self.attacks[self.state]
 		attack = random.choice(options)
-		attack(ctx, players)
+		return attack
 
 	async def death(self, ctx, players, effects):
 		players = [f"**{player.name}**" for player in players]
@@ -166,15 +168,15 @@ class Nist(Entity):
 
 		self.state = new_state.upper()
 
-	async def attack(self, ctx, players, effects):
-		if self.state.upper() == "STUNNED":
-			await ctx.send(f"{self.get_monster_info()} is currently ***{self.state}*** and cannot attack!")
-			return
+	def get_random_attack(self):
+		if self.state.upper() in ["STUNNED", "SNARED", "POLYMORPHED"]:
+			state = self.state
+			self.change_state("NORMAL")
+			return f"**{self.get_monster_info()}** is currently **{state}** and cannot attack!"
 
 		options = self.attacks[self.state]
 		attack = random.choice(options)
-		attack(ctx, players)
-		await ctx.send(attack)
+		return attack
 
 	async def death(self, ctx, players, effects):
 		players = [f"**{player.name}**" for player in players]
