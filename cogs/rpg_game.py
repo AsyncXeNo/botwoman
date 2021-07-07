@@ -83,8 +83,12 @@ class RPG_GAME(commands.Cog):
 		abilities = player.get_attacks()
 
 		if type(abilities) == str:
-			await ctx.send(f"{player.name} cannot choose any ability cuz they are {player.state}")
+			await ctx.send(f"```\n{player.name} cannot choose any ability cuz they are {player.state}.```")
 			return abilities
+
+		if len(abilities) == 1:
+			await ctx.send(f"```\n{player.name} chose an ability at random cuz they are {player.state}.```")
+			return abilities[0]
 
 		while True:
 			await ctx.send(f"{user.mention} please choose your ability. You can either write the name of the ability or the number in front of the ability. (!abilities to see your abilities)")
@@ -113,10 +117,10 @@ class RPG_GAME(commands.Cog):
 					break
 				except Exception as e:
 					await ctx.send("Invalid ability. Did you accidentally type the wrong number? (!abilities to see your abilities)")
-					continue
 
 			elif msg.lower() in [ab.name.lower() for ab in abilities]:
-				ability = abilities[[ab.name.lower() for ab in abilities].index(msg.lower())]
+				ability = abilities[[ab.name.lower() for ab in abilities].index(msg.low
+					continueer())]
 				break
 
 			await ctx.send("Invalid ability. Did you accidentally type the wrong name?")
