@@ -18,7 +18,7 @@ class Player(Entity):
 		STATS = json.load(f)
 
 	PLAYERCLASSES = ["MAGE", "FIGHTER", "WOMAN", "ASSASSIN", "TANK"]
-	PLAYERSTATES = ["NORMAL", "STUNNED", "RETARDED"]
+	PLAYERSTATES = ["NORMAL", "STUNNED", "RETARDED", "SLEEPY", "HIDDEN"]
 	def __init__(self, user_id, character_class, name):
 		self.user_id = user_id
 		self.character_class = self.PLAYERCLASSES[character_class]
@@ -92,10 +92,10 @@ class Player(Entity):
 		self.max_stacks = 100
 
 	def get_attacks(self):
-		if self.state == "STUNNED":
+		if self.state in ["STUNNED", "SLEEPY"]:
 			return f"**{self.name}** didn't use any ability because they are **{self.state}**!"
 		if self.state == "RETARDED":
-			return [random.choice(self.available_attacks)]
+			return [random.choice(self.available_attacks())]
 		if self.level == 10:
 			return self.attacks[self.character_class]
 
@@ -107,11 +107,29 @@ class Player(Entity):
 		attacks_to_return = []
 		attacks = self.attacks[self.character_class] if self.level == 10 else self.attacks[self.character_class][:-1]
 
-		for attack in attacks_to_return:
-			if attack.stacks_req <= self.stacks
-			attacks_to_return.append(attack)
+		for attack in attacks:
+			if attack.stacks_req <= self.stacks:
+				attacks_to_return.append(attack)
 
 		return attacks_to_return
+
+	def available_attacks_info(self):
+		attacks_to_return = []
+		attacks = self.attacks[self.character_class] if self.level == 10 else self.attacks[self.character_class][:-1]
+
+		for attack in attacks:
+			if attack.stacks_req <= self.stacks:
+				attacks_to_return.append(attack)
+
+		response = ""
+		for attack in attacks_to_return:
+			for attack in attacks:
+				response += f"**__{attacks.index(attack) + 1}. {attack.name}__**\n*{attack.description}*\n\n"
+		
+		if response == "":
+			response = f"Seems like you have 0 available attacks. Is it because you are {self.state}?"
+		
+		return response
 
 	def get_attack_info(self):
 		response = ""

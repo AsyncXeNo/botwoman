@@ -1,6 +1,7 @@
 import random
 
-from rpg.enemies import Pizza, Nist
+from rpg.enemies.pizza import Pizza
+from rpg.enemies.nist import Nist
 from rpg.battle_manager import Battle_Manager
 from utils.logger import Logger
 

@@ -1,8 +1,7 @@
 import discord
 import random
-from discord.ext import commands
 
-from rpg.enemies import Pizza, Nist
+from discord.ext import commands
 from utils.math import Vector2
 from utils.logger import Logger
 
@@ -14,6 +13,26 @@ class RPG_GAME(commands.Cog):
 		self.client = client
 
 		customlogger.log_neutral("Loaded rpg_game.")
+
+
+	@commands.command(description="show available abilities")
+	async def usableabilities(self, ctx):
+		if not self.validate():
+			await ctx.send("The game has not started yet.")
+			return
+
+		if not self.validate_ctx(ctx):
+			await ctx.send("Please use the command in the channel where the game is running.")
+			return
+
+		if not self.client.get_cog("RPG").is_registered(ctx.author.id):
+			await ctx.send("You are not even registered for the game. Please wait for current game to finish and then you can register using !register.")
+			return
+
+		player = self.get_cog("RPG").get_player_by_id(ctx.author.id)
+		player = player.room.battle_manager.battles[player]["players"][0]
+
+		await ctx.send(player.available_attacks_info())
 		
 
 	@commands.command(description="information about the room you are in the RPG.")
@@ -91,14 +110,14 @@ class RPG_GAME(commands.Cog):
 			return abilities[0]
 
 		while True:
-			await ctx.send(f"{user.mention} please choose your ability. You can either write the name of the ability or the number in front of the ability. (!abilities to see your abilities)")
+			await ctx.send(f"{user.mention} please choose your ability. You can either write the name of the ability or the number in front of the ability. (!abilities to see all your abilities and !usableabilities to see usable abilities.)")
 
 			def check(msg):
 				return msg.author == user and msg.channel == ctx.channel
 
 			msg = await self.client.wait_for("message", check=check)
 
-			if msg.content == "!abilities":
+			if msg.content in ["!abilities", "!usableabilities"]:
 				continue
 
 			try:
@@ -119,8 +138,7 @@ class RPG_GAME(commands.Cog):
 					await ctx.send("Invalid ability. Did you accidentally type the wrong number? (!abilities to see your abilities)")
 
 			elif msg.lower() in [ab.name.lower() for ab in abilities]:
-				ability = abilities[[ab.name.lower() for ab in abilities].index(msg.low
-					continueer())]
+				ability = abilities[[ab.name.lower() for ab in abilities].index(msg.lower())]
 				break
 
 			await ctx.send("Invalid ability. Did you accidentally type the wrong name?")

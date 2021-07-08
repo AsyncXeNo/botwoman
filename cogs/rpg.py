@@ -252,7 +252,7 @@ class RPG(commands.Cog):
 
 		for party in self.parties:
 			for friend in party:
-				if friend.user_id == ctx.author.user_id:
+				if friend.user_id == ctx.author.id:
 					party_index = self.parties.index(party)
 					player = friend
 

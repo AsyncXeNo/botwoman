@@ -11,15 +11,15 @@ class Turn(object):
             if type(abilities[player]) == str:
                 await self.battle_manager.room.ctx.send(abilities[player])
             else:
-                await self.battle_manager.room.ctx.send(f"```\n{player.name} used {abilities[player].name}!")
-                abilities[player].func(player, self.battle_manager.room.ctx, enemy_party, self.battle_manager.battles[player_party[0]]["ability_effects"], self.battle_manager.room.client)
+                await self.battle_manager.room.ctx.send(f"```\n{player.name} used {abilities[player].name}!```")
+                await abilities[player].func(player, self.battle_manager.room.ctx, player_party,  enemy_party, self.battle_manager.battles[player_party[0]]["ability_effects"], self.battle_manager.room.client)
         
         for enemy in enemy_party:
             if type(abilities[enemy]) == str:
                 await self.battle_manager.room.ctx.send(abilities[enemy])
             else:
-                await self.battle_manager.room.ctx.send(f"```\n{enemy.get_monster_info()} used {abilities[enemy].name}!")
-                abilities[enemy].func(enemy, self.battle_manager.room.ctx, player_party, self.battle_manager.battles[player_party[0]]["ability_effects"], self.battle_manager.room.client)
+                await self.battle_manager.room.ctx.send(f"```\n{enemy.get_monster_info()} used {abilities[enemy].name}!```")
+                await abilities[enemy].func(enemy, self.battle_manager.room.ctx, player_party, enemy_party, self.battle_manager.battles[player_party[0]]["ability_effects"], self.battle_manager.room.client)
 
     async def handle_effects(self, player_token):
         ctx = self.battle_manager.room.ctx
