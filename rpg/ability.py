@@ -16,6 +16,9 @@ class Ability(object):
     def set_battle(self, battle:Battle):
         self.battle = battle
 
+    def clear(self):
+        self.battle = None
+
     def use(self):
         if not self.battle:
             self.logger.log_error("Using an ability when not in combat?")

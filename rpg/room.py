@@ -7,3 +7,5 @@ class Room(object):
         self.logger = Logger("rpg/room")
         
         self.pos = pos
+
+        self.parties = {}

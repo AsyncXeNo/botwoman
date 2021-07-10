@@ -29,6 +29,8 @@ class Entity(object):
 
         self.incombat = False
 
+        self.items = {"active": [], "passive": []}
+
         self.validate()
         self.setup()
 
@@ -68,12 +70,21 @@ class Entity(object):
         for ability in self.baseabilities:
             ability.set_battle(battle)
 
+        for item in self.items["active"]:
+            item.set_entity(self)
+            item.set_battle(battle)
+
     def ready_for_battle(self, battle):
         self.setup(battle)
         self.incombat = True
 
     def end_battle(self):
-        self.setup(None)
+        for ability in self.baseabilities:
+            ability.clear()
+
+        for item in self.items["active"]:
+            item.clear()
+        
         self.incombat = False
 
     def get_name(self):
