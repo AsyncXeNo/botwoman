@@ -1,5 +1,6 @@
 from datetime import timedelta
 import discord
+import asyncio
 import logging
 import os
 import json
@@ -51,6 +52,31 @@ async def on_ready():
 # 	if message.content.split(' ')[0] == ('{0}ping'.format(client.get_prefix())):
 # 		await message.channel.send('pong')
 
+@client.command(description="ban")
+@commands.is_owner()
+async def ban(ctx, member: discord.Member):
+	await ctx.send(f"React to this message with :thumbsup: to vote for banning {member.name}. He will be banned once this message reaches 5 reactions")
+
+	def check(reaction, user):
+		return str(reaction.emoji) == '👍'
+
+	reactions = 0 
+
+	while not reactions == 5:
+		try:
+			reaction, user = await client.wait_for("reaction_add", timeout=60.0, check=check)
+		except asyncio.TimeoutError:
+			await ctx.send(f"No reaction for the past 60 seconds. Guess {member.name} is not banned.")
+			return
+		
+		reactions += 1
+		await ctx.send(reactions)
+
+	await member.kick(reason="being a pedo")
+	await ctx.send(f"Banned {member.name}")
+
+	customlogger.log_neutral(f"kicked {member.name}")
+			
 
 @client.command(description='Unmutes the specified user.')
 @commands.is_owner()
