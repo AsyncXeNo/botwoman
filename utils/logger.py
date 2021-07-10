@@ -1,7 +1,6 @@
 import json
 
 class Logger():
-    fileopen = False
     subscribers = []
 
     @staticmethod
@@ -108,18 +107,13 @@ class Logger():
     
     # post
     def post(self, log):
-        while True:
-            if not self.fileopen:
-                self.fileopen = True
-                with open("data/logs.json", "r") as f:
-                    logs = json.load(f)
-                logs.append(log)
-                for subscriber in Logger.subscribers:
-                    subscriber.logger_event(log) 
-                with open("data/logs.json", "w") as f:
-                    json.dump(logs, f, indent=4)
-                self.fileope = False
-                return
+        with open("data/logs.json", "r") as f:
+            logs = json.load(f)
+        logs.append(log)
+        for subscriber in Logger.subscribers:
+            subscriber.logger_event(log) 
+        with open("data/logs.json", "w") as f:
+            json.dump(logs, f, indent=4)
 
 
     #info
