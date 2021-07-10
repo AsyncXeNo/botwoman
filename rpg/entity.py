@@ -54,7 +54,7 @@ class Entity(object):
                 self.logger.log_error("Invalid ability.")
                 raise Exception("Invalid ability.")
 
-    def setup(self):
+    def setup(self, battle):
         self.hp = self.basemaxhp
         self.str = self.basestr
         self.mp = self.basemp
@@ -62,11 +62,18 @@ class Entity(object):
         self.mr = self.basemr
         self.agility = self.baseagility
 
-    def ready_for_battle(self):
-        self.setup()
+        self.statuses = []
+        self.stacks = 0
+
+        for ability in self.baseabilities:
+            ability.set_battle(battle)
+
+    def ready_for_battle(self, battle):
+        self.setup(battle)
         self.incombat = True
 
     def end_battle(self):
+        self.setup(None)
         self.incombat = False
 
     def get_name(self):
@@ -151,6 +158,13 @@ class Entity(object):
 
     # battle
 
+    def tick(self):
+        # all important pre-turn stuff.
+        pass
+
+    def in_combat(self):
+        return self.in_combat
+
     def get_hp(self):
         pass
 
@@ -211,10 +225,10 @@ class Entity(object):
     def set_statuses(self, statuses:list):
         pass
 
-    def give_statuses(self, status:Status):
+    def give_status(self, status:Status):
         pass
 
-    def take_statuses(self, status_id:str):
+    def take_status(self, status_id:str):
         pass
 
     def get_stacks(self):
