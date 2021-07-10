@@ -5,11 +5,10 @@ from discord import message
 from discord.ext import commands
 from utils.logger import Logger
 
-customlogger = Logger("cogs/replies")
-
 
 class Replies(commands.Cog):
     def __init__(self, client):
+        self.logger = Logger("cogs/replies")
         self.client = client
         self.regex_type = {
             0: "NONE",
@@ -18,7 +17,7 @@ class Replies(commands.Cog):
             3: "MIDDLE"
         }
 
-        customlogger.log_neutral("Loaded replies.")
+        self.logger.log_neutral("Loaded replies.")
 
     
     @commands.command(description="Adds an automatic reply. (Regex implemented. No spaces before or after `%r`.) \nSyntax-> !addreply <sentence> | <reply>")

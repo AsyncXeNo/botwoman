@@ -27,6 +27,9 @@ intents = discord.Intents.default()
 intents.members = True
 client = commands.Bot(command_prefix='!', intents=intents)
 
+with open("data/logs.json", "w") as f:
+	json.dump([], f)
+
 
 @client.event
 async def on_ready():

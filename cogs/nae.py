@@ -4,13 +4,12 @@ from discord import embeds
 from discord.ext import commands
 from utils.logger import Logger
 
-customlogger = Logger("cogs/nae")
-
 
 class Nae(commands.Cog):
     def __init__(self, client):
+        self.logger = Logger("cogs/nae")
         self.client = client
-        customlogger.log_neutral("Loaded nae.")
+        self.logger.log_neutral("Loaded nae.")
 
     @commands.Cog.listener()
     async def on_message(self, message):

@@ -12,8 +12,10 @@ sys.path.append(os.getcwd())
 if __name__ == '__main__':
 	TOKEN = os.getenv('DISCORD_TOKEN')
 	
+	client.load_extension('cogs.debug')
 	for filename in os.listdir('./cogs'):
 		if filename.endswith('.py'):
-			client.load_extension(f'cogs.{filename[:-3]}')
+			if not filename[:-3] == "debug":
+				client.load_extension(f'cogs.{filename[:-3]}')
 
 	client.run(TOKEN)
