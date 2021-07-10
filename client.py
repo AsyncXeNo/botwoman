@@ -19,7 +19,7 @@ logger.addHandler(handler)
 BESTGUILD = os.getenv('BEST_GUILD')
 DEBUGCHANNEL = 851344906185343016
 
-customlogger = Logger('client.py')
+customlogger = Logger('client')
 
 
 # bot
