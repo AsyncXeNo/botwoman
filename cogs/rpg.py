@@ -15,6 +15,8 @@ class RPG(commands.Cog):
 		self.logger = Logger("cog/rpg")
 		self.client = client
 
+		self.logger.log_neutral("Loaded rpg.")
+
 
 def setup(client):
 	client.add_cog(RPG(client))

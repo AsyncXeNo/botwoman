@@ -31,6 +31,7 @@ with open("data/logs.json", "w") as f:
 	json.dump([], f)
 
 
+
 @client.event
 async def on_ready():
 	customlogger.log_neutral('Logged in as {0}!'.format(client.user))
@@ -57,6 +58,7 @@ async def unmute(ctx, member: discord.Member):
 	muterole = discord.utils.find(lambda g: g.name == 'Muted', ctx.guild.roles)
 	await member.remove_roles(muterole)
 	await ctx.send('Unmuted {0}.'.format(member.mention))
+	customlogger.log_neutral('Unmuted {0}.'.format(member.name))
 
 
 @client.command(description="Mutes the specified user.")
@@ -71,6 +73,7 @@ async def mute(ctx, member: discord.Member, *, reason=None):
 
 	await ctx.send('{0} was muted.'.format(member.mention))
 	await member.add_roles(muterole, reason=reason)
+	customlogger.log_neutral('Muted {0}.'.format(member.name))
 
 
 @client.command(description='Pings the bot.')
@@ -90,11 +93,13 @@ async def load(ctx, extension):
 async def unload(ctx, extension):
 	client.unload_extension(f'cogs.{extension}')
 	await ctx.send("ok")
+	customlogger.log_neutral(f"Unloaded {extension}")
 
 
 @client.command(description="you do not need to know")
 @commands.is_owner()
 async def reload(ctx, extension):
 	client.unload_extension(f'cogs.{extension}')
+	customlogger.log_neutral(f"Unloaded {extension}")
 	client.load_extension(f'cogs.{extension}')
 	await ctx.send("ok")

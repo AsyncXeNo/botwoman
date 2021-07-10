@@ -6,9 +6,9 @@ class Logger():
     subscribers = []
 
     @staticmethod
-    async def subscribe(subscriber):
+    def subscribe(subscriber):
         try:
-            await subscriber.logger_event("subscribed to logger posts.")
+            subscriber.logger_event(f"{subscriber} subscribed to logger posts!")
         except:
             Logger("utils/logger").log_error("You subscribed to logger posts from a class with no logger_event() function.")
             raise Exception("subscriber doesn't have logger_event() function")
@@ -53,64 +53,62 @@ class Logger():
         self.end = f'{self.escape_code}{self.styles[None]};{self.colors[None]}{self.end_escape}'
 
 
-    async def log(self, msg, level):
-        await self.log_functions[self.levels[level]](msg)
+    def log(self, msg, level):
+        self.log_functions[self.levels[level]](msg)
 
 
-    async def log_neutral(self, msg):
+    def log_neutral(self, msg):
         msg_style = self.styles['underline']
         msg_color = self.colors['green']
 
         loginfo = 'NORMAL'
 
-        await self.display(loginfo, msg, msg_style, msg_color)
+        self.display(loginfo, msg, msg_style, msg_color)
 
-    async def log_warning(self, msg):
+    def log_warning(self, msg):
         msg_style = self.styles['underline']
         msg_color = self.colors['yellow']
         
         loginfo = 'WARNING'
 
-        await self.display(loginfo, msg, msg_style, msg_color)
+        self.display(loginfo, msg, msg_style, msg_color)
 
-    async def log_alert(self, msg):
+    def log_alert(self, msg):
         msg_style = self.styles[None]
         msg_color = self.colors['yellow']
 
         loginfo = 'ALERT'
 
-        await self.display(loginfo, msg, msg_style, msg_color)
+        self.display(loginfo, msg, msg_style, msg_color)
 
-    async def log_error(self, msg):
+    def log_error(self, msg):
         msg_style = self.styles['bold']
         msg_color = self.colors['red']
 
         loginfo = 'ERROR'
 
-        await self.display(loginfo, msg, msg_style, msg_color)
+        self.display(loginfo, msg, msg_style, msg_color)
 
 
     # custom
-    async def custom_log(self, msg, style, color, loginfo = None):
+    def custom_log(self, msg, style, color, loginfo = None):
         msg_style = self.styles[style]
         msg_color = self.colors[color]
 
         msg_loginfo = 'CUSTOM' if loginfo == None else loginfo
 
-        await self.display(msg_loginfo, msg, msg_style, msg_color)
+        self.display(msg_loginfo, msg, msg_style, msg_color)
 
 
     # display
-    async def display(self, loginfo, msg, msg_style, msg_color):
+    def display(self, loginfo, msg, msg_style, msg_color):
         log = f"[{self.convert_string(loginfo)}] [{self.convert_string(self.path)}]: {msg}"
         print(f'{self.escape_code}{msg_style};{msg_color}{self.end_escape}{log}{self.end}')
-        await self.post(log)
+        self.post(log)
 
     
     # post
-    async def post(self, log):
-        for subscriber in self.subscribes:
-            await subscriber.logger_event(log)
+    def post(self, log):
         if Logger.logs_open:
             Logger.postlist.append(log)
         else:

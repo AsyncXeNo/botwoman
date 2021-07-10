@@ -14,8 +14,7 @@ if __name__ == '__main__':
 	
 	client.load_extension('cogs.debug')
 	for filename in os.listdir('./cogs'):
-		if filename.endswith('.py'):
-			if not filename[:-3] == "debug":
-				client.load_extension(f'cogs.{filename[:-3]}')
+		if filename.endswith('.py') and not filename.startswith('debug'):
+			client.load_extension(f'cogs.{filename[:-3]}')
 
 	client.run(TOKEN)
