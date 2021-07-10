@@ -2,6 +2,9 @@ from utils.logger import Logger
 from utils.id_generator import IdGenerator
 from rpg.ability import Ability
 from rpg.battle import Battle
+from rpg.items.item import Item
+from rpg.items.active_item import ActiveItem
+from rpg.items.passive_item import PassiveItem
 from rpg.statuses.status import Status
 
 
@@ -57,6 +60,10 @@ class Entity(object):
                 raise Exception("Invalid ability.")
 
     def setup(self, battle):
+        if self.in_combat():
+            self.logger.log_error("Cannot setup while already in combat.")
+            raise Exception("Cannot setup while already in combat.")
+
         self.hp = self.basemaxhp
         self.str = self.basestr
         self.mp = self.basemp
@@ -79,6 +86,10 @@ class Entity(object):
         self.incombat = True
 
     def end_battle(self):
+        if not self.in_combat():
+            self.logger.log_error("Cannot end a battle which has not started yet.")
+            raise Exception("Cannot end a battle which has not started yet.")
+
         for ability in self.baseabilities:
             ability.clear()
 
@@ -91,6 +102,9 @@ class Entity(object):
         return self.name
 
     def set_name(self, name:str):
+        if self.in_combat():
+            self.logger.log_error("Cannot change name while in combat.")
+            raise Exception("Cannot change name while in combat.")
         self.logger.log_neutral(f"Changing {self.id} entity's name from {self.name} to {name}")
         self.name = name
 
@@ -165,6 +179,39 @@ class Entity(object):
 
     def take_ability(self, ability_id:str):
         pass
+
+    def get_passive_items(self):
+        return self.items["passive"]
+
+    def give_passive_item(self, item:PassiveItem):
+        if self.in_combat():
+            self.logger.log_error("Cannot add item while in combat.")
+            raise Exception("Cannot add item while in combat.")
+        self.items["passive"].append(item)
+        item.set_entity(self)
+
+    def remove_passive_item(self, item_id:str):
+        if self.in_combat():
+            self.logger.log_error("Cannot remove item while in combat.")
+            raise Exception("Cannot remove item while in combat.")
+        item = self.get_passive_item_by_id(item_id)
+        item.clear()
+        self.items["passive"].remove(item)
+
+    def get_active_items(self):
+        return self.items["active"]
+
+    def give_active_item(self, item:ActiveItem):
+        if self.in_combat():
+            self.logger.log_error("Cannot add item while in combat.")
+            raise Exception("Cannot add item while in combat.")
+        self.items["active"].append(item)
+
+    def remove_active_item(self, item_id:str):
+        if self.in_combat():
+            self.logger.log_error("Cannot remove item while in combat.")
+            raise Exception("Cannot remove item while in combat.")
+        self.items["active"].remove(self.get_active_item_by_id(item_id))
 
 
     # battle
@@ -255,8 +302,28 @@ class Entity(object):
         return self.stacks_name
 
     def set_stacks_name(self, name:str):
+        if self.in_combat():
+            self.logger.log_error("Cannot change stacks name while in combat.")
+            raise Exception("Cannot change stacks name while in combat.")
         self.logger.log_neutral(f"Stacks for entity {self.id} are now called {name}. (changed from {self.stacks_name})")
         self.stacks_name = name
 
     def get_usable_abilities(self, battle:Battle):
         pass
+
+
+    # helper
+
+    def get_passive_item_by_id(self, item_id:str):
+        for item in self.items["passive"]:
+            if item.get_id() == item_id:
+                return item
+
+        self.logger.log_alert(f"Item with id {item_id} not found in passive items.")
+
+    def get_active_item_by_id(self, item_id:str):
+        for item in self.items["active"]:
+            if item.get_id() == item_id:
+                return item
+
+        self.logger.log_alert(f"Item with id {item_id} not found in active items.")
