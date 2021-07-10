@@ -81,6 +81,16 @@ async def ping(ctx):
 	await ctx.send(f"{int(client.latency*1000)} ms")
 
 
+@client.command(description="Gets your avatar.", aliases=["av"])
+async def avatar(ctx, member:discord.Member = None):
+	if member:
+		url = member.avatar_url
+	else:
+		url = ctx.author.avatar_url
+	
+	await ctx.send(url)
+
+
 @client.command(description="you do not need to know")
 @commands.is_owner()
 async def load(ctx, extension):
