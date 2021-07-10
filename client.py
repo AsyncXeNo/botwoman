@@ -52,7 +52,7 @@ async def on_ready():
 # 	if message.content.split(' ')[0] == ('{0}ping'.format(client.get_prefix())):
 # 		await message.channel.send('pong')
 
-@client.command(description="ban")
+@client.command(description="kick lol")
 @commands.is_owner()
 async def ban(ctx, member: discord.Member):
 	await ctx.send(f"React to this message with :thumbsup: to vote for banning {member.name}. He will be banned once this message reaches 5 reactions")
