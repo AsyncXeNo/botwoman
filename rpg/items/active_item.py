@@ -35,4 +35,4 @@ class ActiveItem(Item):
             self.logger.log_error(f"Attempt to use {self.name}'s active when it has no entity assigned. Id- {self.id}")
             raise Exception(f"Attempt to use {self.name}'s active when it has no entity assigned. Id- {self.id}")
 
-        self.func(self.entity, battle)
+        self.func(self.entity, self.battle)
