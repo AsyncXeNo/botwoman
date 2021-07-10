@@ -2,7 +2,6 @@ from utils.logger import Logger
 from utils.id_generator import IdGenerator
 from rpg.ability import Ability
 from rpg.battle import Battle
-from rpg.items.item import Item
 from rpg.items.active_item import ActiveItem
 from rpg.items.passive_item import PassiveItem
 from rpg.statuses.status import Status
