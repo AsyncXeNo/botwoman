@@ -4,11 +4,21 @@ from rpg.battle import Battle
 
 
 class Ability(object):
-    def __init__(self, entity:Entity, func:function):
+    def __init__(self, name:str, description:str, entity:Entity, func:function):
         self.logger = Logger("rpg/ability")
 
-        self.entity.entity
+        self.name = name
+        self.description = description
+        self.entity = entity
+        self.func = func
+        
         self.battle = None
+
+    def get_name(self):
+        return self.name
+
+    def get_description(self):
+        return self.description
 
     def get_battle(self):
         return self.battle

@@ -30,6 +30,7 @@ class Entity(object):
         self.stacks = 0
 
         self.incombat = False
+        self.battle = None
 
         self.items = {"active": [], "passive": []}
 
@@ -82,6 +83,7 @@ class Entity(object):
 
     def ready_for_battle(self, battle):
         self.setup(battle)
+        self.battle = battle
         self.incombat = True
 
     def end_battle(self):
@@ -96,6 +98,7 @@ class Entity(object):
             item.clear()
         
         self.incombat = False
+        self.battle = None
 
     def get_name(self):
         return self.name
@@ -212,6 +215,16 @@ class Entity(object):
             raise Exception("Cannot remove item while in combat.")
         self.items["active"].remove(self.get_active_item_by_id(item_id))
 
+    def get_stacks_name(self):
+        return self.stacks_name
+
+    def set_stacks_name(self, name:str):
+        if self.in_combat():
+            self.logger.log_error("Cannot change stacks name while in combat.")
+            raise Exception("Cannot change stacks name while in combat.")
+        self.logger.log_neutral(f"Stacks for entity {self.id} are now called {name}. (changed from {self.stacks_name})")
+        self.stacks_name = name
+
 
     # battle
 
@@ -247,6 +260,9 @@ class Entity(object):
     def give_str(self, strength:int):
         pass
 
+    def deal_physical(self, damage:int):
+        pass
+
     def get_mp(self):
         self.error_if_not_in_combat()
         return self.mp
@@ -255,6 +271,9 @@ class Entity(object):
         pass
 
     def give_mp(self, mp:int):
+        pass
+
+    def deal_magical(self, damage:int):
         pass
 
     def get_armor(self):
@@ -309,18 +328,14 @@ class Entity(object):
     def give_stacks(self, stacks:int):
         pass
 
-    def get_stacks_name(self):
-        return self.stacks_name
-
-    def set_stacks_name(self, name:str):
-        if self.in_combat():
-            self.logger.log_error("Cannot change stacks name while in combat.")
-            raise Exception("Cannot change stacks name while in combat.")
-        self.logger.log_neutral(f"Stacks for entity {self.id} are now called {name}. (changed from {self.stacks_name})")
-        self.stacks_name = name
-
     def get_usable_abilities(self, battle:Battle):
         pass
+
+    def get_battle(self):
+        if not self.in_combat():
+            self.logger.log_alert("currently not in battle. get_battle() will return nothing")
+        
+        return self.battle
 
 
     # helper

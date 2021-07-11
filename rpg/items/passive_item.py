@@ -4,10 +4,10 @@ from rpg.entity import Entity
 
 
 class PassiveItem(Item):
-    def __init__(self, name:str, level:str, maxhp: int, strength: int, mp: int, armor: int, mr: int, agility: float):
+    def __init__(self, name:str, description:str, level:str, maxhp: int, strength: int, mp: int, armor: int, mr: int, agility: float):
         self.logger = Logger("rpg/items/passive_item")
 
-        super().__init__(name, level)
+        super().__init__(name, description, level)
 
         self.maxhp = maxhp
         self.str = strength
