@@ -1,3 +1,4 @@
+from utils.stats_parser import StatsParser
 from rpg.ability import Ability
 from utils.statuses_parser import StatusesParser
 from rpg.battle import Battle
@@ -46,4 +47,34 @@ class AbilitiesParser(object):
                 return ability["func"]["give"]["dialogue"]
 
 
-        return Ability(name, description, entity, func)
+        def check(entity:Entity):
+            if entity.get_stacks() < ability["check"]["stacks"]:
+                return False, "not enough stacks"
+
+            for status_name in ability["check"]["statuses"]["included"]:
+                if not entity.get_status_by_name(status_name):
+                    return False
+
+            for status_name in ability["check"]["statuses"]["excluded"]:
+                if entity.get_status_by_name(status_name):
+                    return False
+
+            stats = StatsParser.parse_stats_normal(ability["check"]["stats"])
+
+            if entity.get_maxhp() < stats["maxhp"][0] or entity.get_maxhp() > stats["maxhp"][1]:
+                return False
+            if entity.get_str() < stats["str"][0] or entity.get_str() > stats["str"][1]:
+                return False
+            if entity.get_mp() < stats["mp"][0] or entity.get_mp() > stats["mp"][1]:
+                return False
+            if entity.get_armor() < stats["armor"][0] or entity.get_armor() > stats["armor"][1]:
+                return False
+            if entity.get_mr() < stats["mr"][0] or entity.get_mr() > stats["mr"][1]:
+                return False
+            if entity.get_agility() < stats["agility"][0] or entity.get_agility() > stats["agility"][1]:
+                return False
+
+            return True
+
+
+        return Ability(name, description, entity, func, check)

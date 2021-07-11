@@ -37,6 +37,8 @@ class Entity(object):
         self.validate()
         self.setup()
 
+        return self.id
+
     def validate(self):
         if self.basemaxhp < 1:
             self.logger.log_error("Max HP cannot be lower than 1.")
@@ -199,13 +201,14 @@ class Entity(object):
         return self.baseabilities
 
     def set_abilities(self, abilities:list):
-        pass
+        self.logger.log_alert(f"You're directly setting the the abilities for the entity named {self.get_name()} with if {self.get_id()}. I hope you know what you're doing because this process is irreversable.")
+        self.baseabilities= abilities
 
     def give_ability(self, ability:Ability):
-        pass
+        self.baseabilities.append(ability)
 
-    def take_ability(self, ability_id:str):
-        pass
+    def take_ability(self, name:str):
+        self.baseabilities.remove(self.get_ability_by_name(name))
 
     def get_passive_items(self):
         return self.items["passive"]
@@ -217,11 +220,11 @@ class Entity(object):
         self.items["passive"].append(item)
         item.set_entity(self)
 
-    def remove_passive_item(self, item_id:str):
+    def remove_passive_item(self, name:str):
         if self.in_combat():
             self.logger.log_error("Cannot remove item while in combat.")
             raise Exception("Cannot remove item while in combat.")
-        item = self.get_passive_item_by_id(item_id)
+        item = self.get_passive_item_by_name(name)
         if item.is_permanet():
             self.logger.log_alert(f"Cannot remove item named {item.get_name()} cuz it is permanent")
             return f"Cannot remove item named {item.get_name()} cuz it is permanent"
@@ -237,11 +240,11 @@ class Entity(object):
             raise Exception("Cannot add item while in combat.")
         self.items["active"].append(item)
 
-    def remove_active_item(self, item_id:str):
+    def remove_active_item(self, name:str):
         if self.in_combat():
             self.logger.log_error("Cannot remove item while in combat.")
             raise Exception("Cannot remove item while in combat.")
-        self.items["active"].remove(self.get_active_item_by_id(item_id))
+        self.items["active"].remove(self.get_active_item_by_name(name))
 
     def get_stacks_name(self):
         return self.stacks_name
@@ -356,7 +359,10 @@ class Entity(object):
     def give_stacks(self, stacks:int):
         pass
 
-    def get_usable_abilities(self, battle:Battle):
+    def get_usable_abilities(self):
+        pass
+
+    def get_usable_items(self):
         pass
 
     def get_battle(self):
@@ -375,6 +381,13 @@ class Entity(object):
 
         self.logger.log_alert(f"Item with id {item_id} not found in passive items.")
 
+    def get_passive_item_by_name(self, name:str):
+        for item in self.items["passive"]:
+            if item.get_name() == name:
+                return item
+
+        self.logger.log_alert(f"Item with name {name} not found in passive items.")
+
     def get_active_item_by_id(self, item_id:str):
         for item in self.items["active"]:
             if item.get_id() == item_id:
@@ -382,9 +395,37 @@ class Entity(object):
 
         self.logger.log_alert(f"Item with id {item_id} not found in active items.")
 
+    def get_active_item_by_name(self, name:str):
+        for item in self.items["active"]:
+            if item.get_name() == name:
+                return item
+
+        self.logger.log_alert(f"Item with name {name} not found in active items.")
+
     def get_status_by_id(self, status_id:str):
         for status in self.statuses:
             if status.get_id() == status_id:
                 return status
 
         self.logger.log_alert(f"Status with id {status_id} not found in statuses.")
+
+    def get_status_by_name(self, name:str):
+        for status in self.statuses:
+            if status.get_name() == name:
+                return status
+
+        self.logger.log_warning(f"Status with name {name} not found in statuses.")
+
+    def get_ability_by_id(self, ability_id:str):
+        for ability in self.get_abilities():
+            if ability.get_id() == ability_id:
+                return ability
+
+        self.logger.log_alert(f"Ability with id {ability_id} not found in abilities.")
+
+    def get_ability_by_name(self, name:str):
+        for ability in self.get_abilities():
+            if ability.get_name() == name:
+                return ability
+
+        self.logger.log_warning(f"Ability with name {name} not found in abilities.")

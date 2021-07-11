@@ -49,7 +49,37 @@ class ItemsParser(object):
                 return item["func_dialogue"]
 
         
-        return ActiveItem(name, description, level, func)
+        def check(entity:Entity):
+            if entity.get_stacks() < item["check"]["stacks"]:
+                return False, "not enough stacks"
+
+            for status_name in item["check"]["statuses"]["included"]:
+                if not entity.get_status_by_name(status_name):
+                    return False
+
+            for status_name in item["check"]["statuses"]["excluded"]:
+                if entity.get_status_by_name(status_name):
+                    return False
+
+            stats = StatsParser.parse_stats_normal(item["check"]["stats"])
+
+            if entity.get_maxhp() < stats["maxhp"][0] or entity.get_maxhp() > stats["maxhp"][1]:
+                return False
+            if entity.get_str() < stats["str"][0] or entity.get_str() > stats["str"][1]:
+                return False
+            if entity.get_mp() < stats["mp"][0] or entity.get_mp() > stats["mp"][1]:
+                return False
+            if entity.get_armor() < stats["armor"][0] or entity.get_armor() > stats["armor"][1]:
+                return False
+            if entity.get_mr() < stats["mr"][0] or entity.get_mr() > stats["mr"][1]:
+                return False
+            if entity.get_agility() < stats["agility"][0] or entity.get_agility() > stats["agility"][1]:
+                return False
+
+            return True
+
+        
+        return ActiveItem(name, description, level, func, check)
 
     @staticmethod
     def parse_passive(item:dict):
