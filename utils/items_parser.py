@@ -27,15 +27,25 @@ class ItemsParser(object):
                     targets = [entity.get_target(targets)]
 
             for target in targets:
-                target.give_hp(item["func"]["hp"])
-                target.give_agility(item["func"]["agility"])
-                target.give_str(item["func"]["damage"]["physical"])
-                target.give_mp(item["func"]["damage"]["magical"])
-                target.give_armor(item["func"]["defense"]["physical"])
-                target.give_mr(item["func"]["defense"]["magical"])
+                target.set_hp(item["func"]["set"]["hp"])
+                target.set_agility(item["func"]["set"]["agility"])
+                target.set_str(item["func"]["set"]["damage"]["physical"])
+                target.set_mp(item["func"]["set"]["damage"]["magical"])
+                target.set_armor(item["func"]["set"]["defense"]["physical"])
+                target.set_mr(item["func"]["set"]["defense"]["magical"])
+                target.set_status(StatusesParser.parse_status(item["func"]["set"]["status"]))
+
+                target.give_hp(item["func"]["give"]["hp"])
+                target.give_agility(item["func"]["give"]["agility"])
+                target.give_str(item["func"]["give"]["damage"]["physical"])
+                target.give_mp(item["func"]["give"]["damage"]["magical"])
+                target.give_armor(item["func"]["give"]["defense"]["physical"])
+                target.give_mr(item["func"]["give"]["defense"]["magical"])
+                target.give_status(StatusesParser.parse_status(item["func"]["give"]["status"]))
+
                 target.deal_physical(item["func"]["deal"]["physical"])
-                entity.deal_magical(item["func"]["deal"]["magical"])
-                entity.give_status(StatusesParser.parse_status(item["func"]["status"]))
+                target.deal_magical(item["func"]["deal"]["magical"])
+                
                 return item["func_dialogue"]
 
         
@@ -47,7 +57,7 @@ class ItemsParser(object):
         description = item["description"]
         level = item["level"]
 
-        stats = StatsParser.parse_stats(item["stats"])
+        stats = StatsParser.parse_stats_normal(item["stats"])
 
         maxhp = stats["maxhp"]
         strength = stats["str"]

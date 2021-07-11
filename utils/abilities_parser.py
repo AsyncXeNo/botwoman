@@ -24,16 +24,26 @@ class AbilitiesParser(object):
                     targets = [entity.get_target(targets)]
 
             for target in targets:
-                target.give_hp(ability["func"]["hp"])
-                target.give_agility(ability["func"]["agility"])
-                target.give_str(ability["func"]["damage"]["physical"])
-                target.give_mp(ability["func"]["damage"]["magical"])
-                target.give_armor(ability["func"]["defense"]["physical"])
-                target.give_mr(ability["func"]["defense"]["magical"])
+                target.set_hp(ability["func"]["set"]["hp"])
+                target.set_agility(ability["func"]["set"]["agility"])
+                target.set_str(ability["func"]["set"]["damage"]["physical"])
+                target.set_mp(ability["func"]["set"]["damage"]["magical"])
+                target.set_armor(ability["func"]["set"]["defense"]["physical"])
+                target.set_mr(ability["func"]["set"]["defense"]["magical"])
+                target.set_status(StatusesParser.parse_status(ability["func"]["set"]["status"]))
+
+                target.give_hp(ability["func"]["give"]["hp"])
+                target.give_agility(ability["func"]["give"]["agility"])
+                target.give_str(ability["func"]["give"]["damage"]["physical"])
+                target.give_mp(ability["func"]["give"]["damage"]["magical"])
+                target.give_armor(ability["func"]["give"]["defense"]["physical"])
+                target.give_mr(ability["func"]["give"]["defense"]["magical"])
+                target.give_status(StatusesParser.parse_status(ability["func"]["give"]["status"]))
+
                 target.deal_physical(ability["func"]["deal"]["physical"])
-                entity.deal_magical(ability["func"]["deal"]["magical"])
-                entity.give_status(StatusesParser.parse_status(ability["func"]["status"]))
-                return ability["func"]["dialogue"]
+                target.deal_magical(ability["func"]["deal"]["magical"])
+                
+                return ability["func"]["give"]["dialogue"]
 
 
         return Ability(name, description, entity, func)

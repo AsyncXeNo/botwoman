@@ -116,59 +116,84 @@ class Entity(object):
 
     # base
 
+    def error_if_in_combat(self):
+        if not self.in_combat():
+            self.logger.log_error("Called a function which can only be called when not in battle.")
+            raise Exception("Called a function which can only be called when not in battle.")
+
     def get_maxhp(self):
+        if self.basemaxhp < 1:
+            return 1
         return self.basemaxhp
 
     def set_maxhp(self, maxhp:int):
-        pass
+        self.logger.log_alert(f"You're directly setting the value of maxhp to {maxhp}. I hope you know what you're doing because this process is irreversable.")
+        self.basemaxhp = maxhp
 
     def give_maxhp(self, maxhp:int):
-        pass  
+        self.basemaxhp += maxhp
 
     def get_basestr(self):
+        if self.basestr < 0:
+            return 0
         return self.basestr
 
     def set_basestr(self, strength:int):
-        pass
+        self.logger.log_alert(f"You're directly setting the value of base strength to {strength}. I hope you know what you're doing because this process is irreversable.")
+        self.basestr = strength
 
     def give_basestr(self, strength:int):
-        pass
+        self.basestr += strength
 
     def get_basemp(self):
+        if self.basemp < 0:
+            return 0   
         return self.basemp
 
     def set_basemp(self, mp:int):
-        pass
+        self.logger.log_alert(f"You're directly setting the value of base MP to {mp}. I hope you know what you're doing because this process is irreversable.")
+        self.basemp = mp
 
     def give_basemp(self, mp:int):
-        pass
+        self.basemp += mp
 
     def get_basearmor(self):
+        if self.basearmor < 0:
+            return 0
         return self.basearmor
-
+    
     def set_basearmor(self, armor:int):
-        pass
+        self.logger.log_alert(f"You're directly setting the value of base armor to {armor}. I hope you know what you're doing because this process is irreversable.")
+        self.basearmor = armor
 
     def give_basearmor(self, armor:int):
-        pass
+        self.basearmor += armor
 
     def get_basemr(self):
+        if self.basemr < 0:
+            return 0
         return self.basemr
-    
+
     def set_basemr(self, mr:int):
-        pass
+        self.logger.log_alert(f"You're directly setting the value of base MR to {mr}. I hope you know what you're doing because this process is irreversable.")
+        self.basemr = mr
 
     def give_basemr(self, mr:int):
-        pass
+        self.basemr += mr
 
     def get_baseagility(self):
+        if self.baseagility < 0.0:
+            return 0.0
+        if self.baseagility > 1.0:
+            return 1.0
         return self.baseagility
 
     def set_baseagility(self, agility:float):
-        pass
+        self.logger.log_alert(f"You're directly setting the value of base agility to {agility}. I hope you know what you're doing because this process is irreversable.")
+        self.baseagility = agility
 
-    def give_baseagility(self, agolity:float):
-        pass
+    def give_baseagility(self, agility:float):
+        self.baseagility += agility
 
     def get_abilities(self):
         return self.baseabilities
@@ -197,6 +222,9 @@ class Entity(object):
             self.logger.log_error("Cannot remove item while in combat.")
             raise Exception("Cannot remove item while in combat.")
         item = self.get_passive_item_by_id(item_id)
+        if item.is_permanet():
+            self.logger.log_alert(f"Cannot remove item named {item.get_name()} cuz it is permanent")
+            return f"Cannot remove item named {item.get_name()} cuz it is permanent"
         item.clear()
         self.items["passive"].remove(item)
 
