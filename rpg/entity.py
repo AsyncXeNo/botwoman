@@ -129,10 +129,12 @@ class Entity(object):
         return self.basemaxhp
 
     def set_maxhp(self, maxhp:int):
-        self.logger.log_alert(f"You're directly setting the value of maxhp to {maxhp}. I hope you know what you're doing because this process is irreversable.")
+        self.error_if_in_combat()
+        self.logger.log_alert(f"You're directly setting the value of maxhp to {maxhp}. I hope you know what you're doing because this process is irreversible.")
         self.basemaxhp = maxhp
 
     def give_maxhp(self, maxhp:int):
+        self.error_if_in_combat()
         self.basemaxhp += maxhp
 
     def get_basestr(self):
@@ -141,10 +143,12 @@ class Entity(object):
         return self.basestr
 
     def set_basestr(self, strength:int):
-        self.logger.log_alert(f"You're directly setting the value of base strength to {strength}. I hope you know what you're doing because this process is irreversable.")
+        self.error_if_in_combat()
+        self.logger.log_alert(f"You're directly setting the value of base strength to {strength}. I hope you know what you're doing because this process is irreversible.")
         self.basestr = strength
 
     def give_basestr(self, strength:int):
+        self.error_if_in_combat()
         self.basestr += strength
 
     def get_basemp(self):
@@ -153,10 +157,12 @@ class Entity(object):
         return self.basemp
 
     def set_basemp(self, mp:int):
-        self.logger.log_alert(f"You're directly setting the value of base MP to {mp}. I hope you know what you're doing because this process is irreversable.")
+        self.error_if_in_combat()
+        self.logger.log_alert(f"You're directly setting the value of base MP to {mp}. I hope you know what you're doing because this process is irreversible.")
         self.basemp = mp
 
     def give_basemp(self, mp:int):
+        self.error_if_in_combat()
         self.basemp += mp
 
     def get_basearmor(self):
@@ -165,10 +171,12 @@ class Entity(object):
         return self.basearmor
     
     def set_basearmor(self, armor:int):
-        self.logger.log_alert(f"You're directly setting the value of base armor to {armor}. I hope you know what you're doing because this process is irreversable.")
+        self.error_if_in_combat()
+        self.logger.log_alert(f"You're directly setting the value of base armor to {armor}. I hope you know what you're doing because this process is irreversible.")
         self.basearmor = armor
 
     def give_basearmor(self, armor:int):
+        self.error_if_in_combat()
         self.basearmor += armor
 
     def get_basemr(self):
@@ -177,10 +185,12 @@ class Entity(object):
         return self.basemr
 
     def set_basemr(self, mr:int):
-        self.logger.log_alert(f"You're directly setting the value of base MR to {mr}. I hope you know what you're doing because this process is irreversable.")
+        self.error_if_in_combat()
+        self.logger.log_alert(f"You're directly setting the value of base MR to {mr}. I hope you know what you're doing because this process is irreversible.")
         self.basemr = mr
 
     def give_basemr(self, mr:int):
+        self.error_if_in_combat()
         self.basemr += mr
 
     def get_baseagility(self):
@@ -191,29 +201,35 @@ class Entity(object):
         return self.baseagility
 
     def set_baseagility(self, agility:float):
-        self.logger.log_alert(f"You're directly setting the value of base agility to {agility}. I hope you know what you're doing because this process is irreversable.")
+        self.error_if_in_combat()
+        self.logger.log_alert(f"You're directly setting the value of base agility to {agility}. I hope you know what you're doing because this process is irreversible.")
         self.baseagility = agility
 
     def give_baseagility(self, agility:float):
+        self.error_if_in_combat()
         self.baseagility += agility
 
     def get_abilities(self):
         return self.baseabilities
 
     def set_abilities(self, abilities:list):
-        self.logger.log_alert(f"You're directly setting the the abilities for the entity named {self.get_name()} with if {self.get_id()}. I hope you know what you're doing because this process is irreversable.")
+        self.error_if_in_combat()
+        self.logger.log_alert(f"You're directly setting the the abilities for the entity named {self.get_name()} with if {self.get_id()}. I hope you know what you're doing because this process is irreversible.")
         self.baseabilities= abilities
 
     def give_ability(self, ability:Ability):
+        self.error_if_in_combat()
         self.baseabilities.append(ability)
 
     def take_ability(self, name:str):
+        self.error_if_in_combat()
         self.baseabilities.remove(self.get_ability_by_name(name))
 
     def get_passive_items(self):
         return self.items["passive"]
 
     def give_passive_item(self, item:PassiveItem):
+        self.error_if_in_combat()
         if self.in_combat():
             self.logger.log_error("Cannot add item while in combat.")
             raise Exception("Cannot add item while in combat.")
@@ -221,6 +237,7 @@ class Entity(object):
         item.set_entity(self)
 
     def remove_passive_item(self, name:str):
+        self.error_if_in_combat()
         if self.in_combat():
             self.logger.log_error("Cannot remove item while in combat.")
             raise Exception("Cannot remove item while in combat.")
@@ -235,12 +252,14 @@ class Entity(object):
         return self.items["active"]
 
     def give_active_item(self, item:ActiveItem):
+        self.error_if_in_combat()
         if self.in_combat():
             self.logger.log_error("Cannot add item while in combat.")
             raise Exception("Cannot add item while in combat.")
         self.items["active"].append(item)
 
     def remove_active_item(self, name:str):
+        self.error_if_in_combat()
         if self.in_combat():
             self.logger.log_error("Cannot remove item while in combat.")
             raise Exception("Cannot remove item while in combat.")
@@ -276,7 +295,9 @@ class Entity(object):
         return self.hp
 
     def set_hp(self, hp:int):
-        pass
+        self.error_if_in_combat()
+        self.logger.log_alert(f"You are directly setting the HP of this entity to {hp}. I hope you know what you are doing cuz this process is irreversible.")
+        self.hp = hp
 
     def give_hp(self, hp:int):
         pass  
@@ -347,7 +368,7 @@ class Entity(object):
     def give_status(self, status:Status):
         pass
 
-    def take_status(self, status_id:str):
+    def take_status(self, status_name:str):
         pass
 
     def get_stacks(self):
