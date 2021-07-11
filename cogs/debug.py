@@ -29,15 +29,6 @@ class Debug(commands.Cog):
             msg = self.logs.pop(0)
             await channel.send(f"`{msg}`")
 
-    @commands.command(description="Starts posting logs in #debug")
-    @commands.is_owner()
-    async def debug(self, ctx):
-        if self.started:
-            self.logger.log_alert("You already started this task stupit")
-        await self.client.get_channel(self.DEBUGCHANNEL).purge(limit=10000)
-        self.started = True
-        self.post_log.start()
-
 
 def setup(client):
     client.add_cog(Debug(client))

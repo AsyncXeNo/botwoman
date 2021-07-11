@@ -114,7 +114,7 @@ class Entity(object):
     # base
 
     def get_maxhp(self):
-        pass
+        return self.basemaxhp
 
     def set_maxhp(self, maxhp:int):
         pass
@@ -123,7 +123,7 @@ class Entity(object):
         pass  
 
     def get_basestr(self):
-        pass
+        return self.basestr
 
     def set_basestr(self, strength:int):
         pass
@@ -132,7 +132,7 @@ class Entity(object):
         pass
 
     def get_basemp(self):
-        pass
+        return self.basemp
 
     def set_basemp(self, mp:int):
         pass
@@ -141,7 +141,7 @@ class Entity(object):
         pass
 
     def get_basearmor(self):
-        pass
+        return self.basearmor
 
     def set_basearmor(self, armor:int):
         pass
@@ -150,7 +150,7 @@ class Entity(object):
         pass
 
     def get_basemr(self):
-        pass
+        return self.basemr
     
     def set_basemr(self, mr:int):
         pass
@@ -159,7 +159,7 @@ class Entity(object):
         pass
 
     def get_baseagility(self):
-        pass
+        return self.baseagility
 
     def set_baseagility(self, agility:float):
         pass
@@ -168,7 +168,7 @@ class Entity(object):
         pass
 
     def get_abilities(self):
-        pass
+        return self.baseabilities
 
     def set_abilities(self, abilities:list):
         pass
@@ -222,8 +222,14 @@ class Entity(object):
     def in_combat(self):
         return self.in_combat
 
+    def error_if_not_in_combat(self):
+        if not self.in_combat():
+            self.logger.log_error("Called a function which can only be called while in battle.")
+            raise Exception("Called a function which can only be called while in battle.")
+
     def get_hp(self):
-        pass
+        self.error_if_not_in_combat()
+        return self.hp
 
     def set_hp(self, hp:int):
         pass
@@ -232,7 +238,8 @@ class Entity(object):
         pass  
 
     def get_str(self):
-        pass
+        self.error_if_not_in_combat()
+        return self.str
 
     def set_str(self, strength:int):
         pass
@@ -241,7 +248,8 @@ class Entity(object):
         pass
 
     def get_mp(self):
-        pass
+        self.error_if_not_in_combat()
+        return self.mp
 
     def set_mp(self, mp:int):
         pass
@@ -250,7 +258,8 @@ class Entity(object):
         pass
 
     def get_armor(self):
-        pass
+        self.error_if_not_in_combat()
+        return self.armor
 
     def set_armor(self, armor:int):
         pass
@@ -259,7 +268,8 @@ class Entity(object):
         pass
 
     def get_mr(self):
-        pass
+        self.error_if_not_in_combat()
+        return self.mr
     
     def set_mr(self, mr:int):
         pass
@@ -268,7 +278,8 @@ class Entity(object):
         pass
 
     def get_agility(self):
-        pass
+        self.error_if_not_in_combat()
+        return self.agility
 
     def set_agility(self, agility:float):
         pass
@@ -277,7 +288,8 @@ class Entity(object):
         pass
 
     def get_statuses(self):
-        pass
+        self.error_if_not_in_combat()
+        return self.statuses
 
     def set_statuses(self, statuses:list):
         pass
@@ -289,7 +301,7 @@ class Entity(object):
         pass
 
     def get_stacks(self):
-        pass
+        return self.stacks
 
     def set_stacks(self, stacks:int):
         pass
@@ -326,3 +338,10 @@ class Entity(object):
                 return item
 
         self.logger.log_alert(f"Item with id {item_id} not found in active items.")
+
+    def get_status_by_id(self, status_id:str):
+        for status in self.statuses:
+            if status.get_id() == status_id:
+                return status
+
+        self.logger.log_alert(f"Status with id {status_id} not found in statuses.")

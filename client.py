@@ -36,6 +36,8 @@ with open("data/logs.json", "w") as f:
 @client.event
 async def on_ready():
 	customlogger.log_neutral('Logged in as {0}!'.format(client.user))
+	await client.get_channel(DEBUGCHANNEL).purge(limit=10000)
+	client.get_cog("Debug").post_log.start()
 
 
 # @client.event
