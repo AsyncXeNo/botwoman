@@ -30,6 +30,7 @@ class Entity(object):
         self.stacks = 0
 
         self.incombat = False
+        self.turn = False
         self.battle = None
 
         self.items = {"active": [], "passive": []}
@@ -122,9 +123,12 @@ class Entity(object):
             raise Exception("Called a function which can only be called when not in battle.")
 
     def get_maxhp(self):
-        if self.basemaxhp < 1:
+        maxhp = self.basemaxhp
+        for item in self.items["passive"]:
+            maxhp += item.maxhp
+        if maxhp < 1:
             return 1
-        return self.basemaxhp
+        return maxhp
 
     def set_maxhp(self, maxhp:int):
         self.error_if_in_combat()
@@ -136,9 +140,12 @@ class Entity(object):
         self.basemaxhp += maxhp
 
     def get_basestr(self):
-        if self.basestr < 0:
+        basestr = self.basestr
+        for item in self.items["passive"]:
+            basestr += item.str
+        if basestr < 0:
             return 0
-        return self.basestr
+        return basestr
 
     def set_basestr(self, strength:int):
         self.error_if_in_combat()
@@ -150,9 +157,12 @@ class Entity(object):
         self.basestr += strength
 
     def get_basemp(self):
-        if self.basemp < 0:
+        basemp = self.basemp
+        for item  in self.items["passive"]:
+            basemp += item.mp
+        if basemp < 0:
             return 0   
-        return self.basemp
+        return basemp
 
     def set_basemp(self, mp:int):
         self.error_if_in_combat()
@@ -164,9 +174,12 @@ class Entity(object):
         self.basemp += mp
 
     def get_basearmor(self):
-        if self.basearmor < 0:
+        basearmor = self.basearmor
+        for item in self.items["passive"]:
+            basearmor += item.armor
+        if basearmor < 0:
             return 0
-        return self.basearmor
+        return basearmor
     
     def set_basearmor(self, armor:int):
         self.error_if_in_combat()
@@ -178,9 +191,12 @@ class Entity(object):
         self.basearmor += armor
 
     def get_basemr(self):
-        if self.basemr < 0:
+        basemr = self.basemr
+        for item in self.items["passive"]:
+            basemr += item.mr
+        if basemr < 0:
             return 0
-        return self.basemr
+        return basemr
 
     def set_basemr(self, mr:int):
         self.error_if_in_combat()
@@ -192,11 +208,14 @@ class Entity(object):
         self.basemr += mr
 
     def get_baseagility(self):
-        if self.baseagility < 0.0:
+        baseagility = self.baseagility
+        for item in self.items["passive"]:
+            baseagility += item.agility
+        if baseagility < 0.0:
             return 0.0
-        if self.baseagility > 1.0:
+        if baseagility > 1.0:
             return 1.0
-        return self.baseagility
+        return baseagility
 
     def set_baseagility(self, agility:float):
         self.error_if_in_combat()
@@ -283,24 +302,27 @@ class Entity(object):
     def in_combat(self):
         return self.in_combat
 
+    def turn(self):
+        return self.turn
+
+    def set_turn_true(self):
+        self.turn = True
+
+    def set_turn_false(self):
+        self.turn = False
+
     def error_if_not_in_combat(self):
         if not self.in_combat():
             self.logger.log_error("Called a function which can only be called while in battle.")
             raise Exception("Called a function which can only be called while in battle.")
 
-    def deal_physical(self, damage:int):
-        if self.get_armor() == 0:
-            self.hp -= damage
-            return
-
-    def deal_magical(self, damage:int):
-        pass
-
     def deal_true(self, damage:int):
-        pass
+        self.take_hp(damage)
 
     def get_hp(self):
         self.error_if_not_in_combat()
+        if self.hp <= 0:
+            return 0
         return self.hp
 
     def set_hp(self, hp:int):
@@ -320,6 +342,13 @@ class Entity(object):
             self.hp = self.get_maxhp
             return
         self.get_hp += hp 
+
+    def take_hp(self, hp:int):
+        self.error_if_not_in_combat()
+        if self.hp - hp <= 0:
+            self.hp = 0
+            return
+        self.hp -= hp
 
     def get_str(self):
         self.error_if_not_in_combat()
