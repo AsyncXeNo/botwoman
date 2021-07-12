@@ -37,8 +37,6 @@ class Entity(object):
         self.validate()
         self.setup()
 
-        return self.id
-
     def validate(self):
         if self.basemaxhp < 1:
             self.logger.log_error("Max HP cannot be lower than 1.")

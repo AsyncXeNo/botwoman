@@ -19,8 +19,6 @@ class Turn(object):
         self.setup()
         self.start()
 
-        return self.id
-
     def get_id(self):
         return self.id
 

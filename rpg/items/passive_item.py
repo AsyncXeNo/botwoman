@@ -7,7 +7,7 @@ class PassiveItem(Item):
     def __init__(self, name:str, description:str, level:str, permanent:bool, maxhp: int, strength: int, mp: int, armor: int, mr: int, agility: float):
         self.logger = Logger("rpg/items/passive_item")
 
-        item_id = super().__init__(name, description, level)
+        super().__init__(name, description, level)
 
         self.permanent = permanent
 
@@ -19,8 +19,6 @@ class PassiveItem(Item):
         self.agility = agility
 
         self.entity = None
-
-        return item_id
     
     def is_permanent(self):
         return self.permanent    

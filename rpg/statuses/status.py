@@ -18,8 +18,6 @@ class Status(object):
 
         self.validate()
         self.logger.log_neutral(f"Created a status named {self.name} with id {self.id} which lasts for next {turns} turns.")
-
-        return self.id
     
     def is_bad(self):
         return self.bad    

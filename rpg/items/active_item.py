@@ -7,15 +7,13 @@ from rpg.battle import Battle
 class ActiveItem(Item):
     def __init__(self, name:str, description:str, level:int, func:function, check:function):
         self.logger = Logger("rpg/items/active_item")
-        item_id = super().__init__(name, description, level)
+        super().__init__(name, description, level)
 
         self.func = func
         self.check = check
 
         self.entity = None
         self.battle = None
-
-        return item_id
 
     def get_entity(self):
         return self.entity

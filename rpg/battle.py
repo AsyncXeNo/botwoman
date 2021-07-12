@@ -18,8 +18,6 @@ class Battle(object):
         self.ready_for_battle()
         self.start_battle()
 
-        return self.id
-
     def get_id(self):
         return self.id
 

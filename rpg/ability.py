@@ -16,8 +16,6 @@ class Ability(object):
         self.check = check
         
         self.battle = None
-        
-        return self.id
 
     def get_name(self):
         return self.name
