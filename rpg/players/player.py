@@ -15,25 +15,35 @@ class Player(Entity):
     def get_level(self):
         return self.level
 
+    def get_exp(self):
+        return self.exp
+
     def level_up(self):
-        pass
-        
-    def deal_physical(self, damage: int):
-        self.error_if_not_in_combat()
-        if self.get_armor() == 0:
-            self.take_hp(damage)
-            return
+        if self.get_level() == self.max_lv:
+            self.logger.log_neutral(f"{self.get_name()} is already max level.")
+            return f"{self.get_name()} is already max level."
 
-        reduction = 1 - (5099 / (self.get_level() * self.get_armor() + 5098))
-        damage = int(damage - (damage*reduction))
-        self.take_hp(damage)
+        maxhp = self.basemaxhp
+        strength = self.basestr
+        mp = self.basemp
+        armor = self.basearmor
+        mr = self.basemr
+        agility = self.baseagility
 
-    def deal_magical(self, damage: int):
-        self.error_if_not_in_combat()
-        if self.get_mr() == 0:
-            self.take_hp(damage)
-            return
-        
-        reduction = 1 - (5099 / (self.get_level() * self.get_mr() + 5098))
-        damage = int(damage - (damage*reduction))
-        self.take_hp(damage)
+        self.give_maxhp(maxhp*0.3)
+        self.give_basestr(strength*0.3)
+        self.give_basemp(mp*0.3)
+        self.give_basearmor(armor*0.3)
+        self.give_basemr(mr*0.3)
+        self.give_baseagility(agility*0.3)
+        self.exp_to_lv_up = self.exp_to_lv_up * 1.3
+
+        self.level += 1
+
+        return f"{self.name} leveled up! ({self.level-1} -> {self.level})\nMax HP {maxhp} -> {self.basemaxhp}\nStrength {strength} -> {self.basestr}\nMP {mp} -> {self.basemp}\nArmor {armor} -> {self.basearmor}\nMR {mr} -> {self.basemr}\nAgility {agility} -> {self.baseagility}"
+
+    def give_exp(self, exp:int):
+        if self.exp + exp > self.exp_to_lv_up:
+            exp_left = exp - self.exp_to_lv_up
+            self.level_up()
+            self.give_exp(exp_left)

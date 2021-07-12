@@ -316,6 +316,26 @@ class Entity(object):
             self.logger.log_error("Called a function which can only be called while in battle.")
             raise Exception("Called a function which can only be called while in battle.")
 
+    def deal_physical(self, damage: int):
+        self.error_if_not_in_combat()
+        if self.get_armor() == 0:
+            self.take_hp(damage)
+            return
+
+        reduction = 1 - (5099 / (self.get_level() * self.get_armor() + 5098))
+        damage = int(damage - (damage*reduction))
+        self.take_hp(damage)
+
+    def deal_magical(self, damage: int):
+        self.error_if_not_in_combat()
+        if self.get_mr() == 0:
+            self.take_hp(damage)
+            return
+        
+        reduction = 1 - (5099 / (self.get_level() * self.get_mr() + 5098))
+        damage = int(damage - (damage*reduction))
+        self.take_hp(damage)
+
     def deal_true(self, damage:int):
         self.take_hp(damage)
 
