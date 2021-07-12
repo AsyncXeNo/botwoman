@@ -1,3 +1,6 @@
+import json
+import pickle
+
 from rpg.players.player import Player
 from rpg.players.assassin import Assassin
 from rpg.players.mage import Mage
@@ -8,13 +11,6 @@ from rpg.parties.player_party import PlayerParty
 from discord.ext import commands
 from utils.logger import Logger
 from utils.stats_parser import StatsParser
-
-import discord
-import json
-import random
-import string
-import pickle
-import copy
 
 
 class RPG(commands.Cog):
@@ -104,7 +100,7 @@ class RPG(commands.Cog):
 		player = self.player_classes[msg.content.upper()](ctx.author.name, str(ctx.author.id))
 		self.register_player(player)
 
-	
+
 	# helper
 	def clear(self):
 		self.logger.log_alert("This is going to clear all saved data once and for all. I hope you know what you're doing cuz this process is irreversible.")
