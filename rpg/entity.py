@@ -288,101 +288,200 @@ class Entity(object):
             self.logger.log_error("Called a function which can only be called while in battle.")
             raise Exception("Called a function which can only be called while in battle.")
 
+    def deal_physical(self, damage:int):
+        if self.get_armor() == 0:
+            self.hp -= damage
+            return
+
+    def deal_magical(self, damage:int):
+        pass
+
+    def deal_true(self, damage:int):
+        pass
+
     def get_hp(self):
         self.error_if_not_in_combat()
         return self.hp
 
     def set_hp(self, hp:int):
-        self.error_if_in_combat()
-        self.logger.log_alert(f"You are directly setting the HP of this entity to {hp}. I hope you know what you are doing cuz this process is irreversible.")
+        self.error_if_not_in_combat()
+        if hp < 0:
+            self.logger.log_error("Cannot set HP to be directly lower than 0.")
+            raise Exception("Cannot set HP to be directly lower than 0.")
+        self.logger.log_alert(f"You are directly setting the HP of this entity to {hp}. I hope you know what you are doing cuz this process is irreversible and can bypass the maxhp filter.")
         self.hp = hp
 
     def give_hp(self, hp:int):
-        pass  
+        self.error_if_not_in_combat()
+        if hp < 0:
+            self.logger.log_error("Please use deal_physcial or deal_magical if you want to damage the entity.")
+            raise Exception("Please use deal_physcial or deal_magical if you want to damage the entity.")
+        if self.hp + hp > self.get_maxhp:
+            self.hp = self.get_maxhp
+            return
+        self.get_hp += hp 
 
     def get_str(self):
         self.error_if_not_in_combat()
         return self.str
 
     def set_str(self, strength:int):
-        pass
+        self.error_if_not_in_combat()
+        if strength < 0:
+            self.logger.log_error("Cannot set strength to be lower than 0.")
+            raise Exception("Cannot set strength to be lower than 0.")
+        self.logger.log_alert(f"You are directly setting the STRENGTH of this entity to {strength}. I hope you know what you are doing cuz this process is irreversible.")
+        self.str = strength
 
     def give_str(self, strength:int):
-        pass
-
-    def deal_physical(self, damage:int):
-        pass
+        self.error_if_not_in_combat()
+        if self.str + strength < 0:
+            self.str = 0
+            return
+        self.str += strength
 
     def get_mp(self):
         self.error_if_not_in_combat()
         return self.mp
 
     def set_mp(self, mp:int):
-        pass
+        self.error_if_not_in_combat()
+        if mp < 0:
+            self.logger.log_error("Cannot set MP to be lower than 0.")
+            raise Exception("Cannot set MP to be lower than 0.")
+        self.logger.log_alert(f"You are directly setting the MP of this entity to {mp}. I hope you know what you are doing cuz this process is irreversible.")
+        self.mp = mp
 
     def give_mp(self, mp:int):
-        pass
-
-    def deal_magical(self, damage:int):
-        pass
+        self.error_if_not_in_combat()
+        if self.mp + mp < 0:
+            self.mp = 0
+            return
+        self.mp += mp
 
     def get_armor(self):
         self.error_if_not_in_combat()
         return self.armor
 
     def set_armor(self, armor:int):
-        pass
+        self.error_if_not_in_combat()
+        if armor < 0:
+            self.logger.log_error("Cannot set Armor to be lower than 0.")
+            raise Exception(("Cannot set Armor to be lower than 0."))
+        self.logger.log_alert(f"You are directly setting the armor of this entity to {armor}. I hope you know what you are doing cuz this process is irreversible.")
+        self.armor = armor
 
     def give_armor(self, armor:int):
-        pass
+        self.error_if_not_in_combat()
+        if self.armor + armor < 0:
+            self.armor = 0
+            return
+        self.armor += armor
 
     def get_mr(self):
         self.error_if_not_in_combat()
         return self.mr
     
     def set_mr(self, mr:int):
-        pass
+        self.error_if_not_in_combat()
+        if mr < 0:
+            self.logger.log_error("Cannot set MR to be lower than 0.")
+            raise Exception(("Cannot set MR to be lower than 0."))
+        self.logger.log_alert(f"You are directly setting the MR of this entity to {mr}. I hope you know what you are doing cuz this process is irreversible.")
+        self.mr = mr
 
     def give_mr(self, mr:int):
-        pass
+        self.error_if_not_in_combat()
+        if self.mr + mr < 0:
+            self.mr = 0
+            return
+        self.mr += mr
 
     def get_agility(self):
         self.error_if_not_in_combat()
         return self.agility
 
     def set_agility(self, agility:float):
-        pass
+        self.error_if_not_in_combat()
+        if agility < 0.0:
+            self.logger.log_error("Cannot set aglity to be lower than 0.")
+            raise Exception(("Cannot set agility to be lower than 0."))
+        if agility < 1.0:
+            self.logger.log_error("Cannot set aglity to be more than 1.")
+            raise Exception(("Cannot set agility to be lower than 0."))
+        self.logger.log_alert(f"You are directly setting the agility of this entity to {agility}. I hope you know what you are doing cuz this process is irreversible.")
+        self.agility = agility
 
     def give_agility(self, agility:float):
-        pass
+        self.error_if_not_in_combat()
+        if self.agility + agility < 0.0:
+            self.agility = 0.0
+            return
+        if self.agility + agility > 1.0:
+            self.agility = 1.0
+            return
+        self.agility += agility
 
     def get_statuses(self):
         self.error_if_not_in_combat()
         return self.statuses
 
     def set_statuses(self, statuses:list):
-        pass
+        self.error_if_not_in_combat()
+        for status in statuses:
+            if type(status) != Status:
+                self.logger.log_error("Setting status to something that is not a status.")
+                raise Exception("Setting status to something that is not a status.")
+        self.logger.log_alert(f"You are directly setting the statuses of this entity to {[status.get_name() for status in statuses]}. I hope you know what you are doing cuz this process is irreversible.")
+        self.statuses = statuses
 
     def give_status(self, status:Status):
-        pass
+        self.error_if_not_in_combat()
+        if type(status) != Status:
+            self.logger.log_error("Invalid status.")
+            raise Exception("Invalid status.")
+        self.statuses.append(status)
 
     def take_status(self, status_name:str):
-        pass
+        self.error_if_not_in_combat()
+        if self.get_status_by_name(status_name):
+            self.statuses.remove(self.get_status_by_name(status_name))
 
     def get_stacks(self):
+        self.error_if_not_in_combat()
         return self.stacks
 
     def set_stacks(self, stacks:int):
-        pass
+        self.error_if_not_in_combat()
+        if stacks < 0 or stacks > 100:
+            self.logger.log_error("Cannot set the stacks to be outside range 0-100.")
+            raise Exception("Cannot set the stacks to be outside range 0-100.")
+        self.logger.log_alert(f"You are directly setting the stacks of this entity to be {stacks}. I hope you know what you're doing cuz this process is irreversible.")
+        self.stacks = stacks
 
     def give_stacks(self, stacks:int):
-        pass
+        self.error_if_not_in_combat()
+        if self.stacks + stacks < 0:
+            self.stacks = 0
+            return
+        if self.stacks + stacks > 100:
+            self.stacks = 100
+            return
+        self.stacks += stacks
 
     def get_usable_abilities(self):
-        pass
+        usable = []
+        for ability in self.get_abilities:
+            if ability.can_use():
+                usable.append(ability)
+        return usable
 
     def get_usable_items(self):
-        pass
+        usable = []
+        for item in self.items["active"]:
+            if item.can_use():
+                usable.append(item)
+        return usable
 
     def get_battle(self):
         if not self.in_combat():
