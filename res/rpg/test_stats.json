@@ -1,0 +1,62 @@
+{
+    "ASSASSIN": {
+        "maxhp": [100, 150],
+        "damage": {
+            "physcial": [65, 75],
+            "magical": [2, 2]
+        },
+        "defense": {
+            "physcial": [5, 10],
+            "magical": [5, 10]
+        },
+        "agility": [90, 100]
+    },
+    "WOMAN": {
+        "maxhp": [100, 150],
+        "damage": {
+            "physcial": [1, 1],
+            "magical": [1, 1]
+        },
+        "defense": {
+            "physcial": [1, 1],
+            "magical": [1, 1]
+        },
+        "agility": [60, 80]
+    },
+    "FIGHTER": {
+        "maxhp": [160, 220],
+        "damage": {
+            "physcial": [45, 55],
+            "magical": [45, 55]
+        },
+        "defense": {
+            "physcial": [15, 23],
+            "magical": [15, 23]
+        },
+        "agility": [40, 65]
+    },
+    "MAGE": {
+        "maxhp": [90, 140],
+        "damage": {
+            "physcial": [1, 1],
+            "magical": [75, 75]
+        },
+        "defense": {
+            "physcial": [5, 10],
+            "magical": [5, 10]
+        },
+        "agility": [10, 40]
+    },
+    "TANK": {
+        "maxhp": [210, 270],
+        "damage": {
+            "physcial": [45, 45],
+            "magical": [1, 1]
+        },
+        "defense": {
+            "physcial": [25, 40],
+            "magical": [25, 40]
+        },
+        "agility": [0, 25]
+    }
+}

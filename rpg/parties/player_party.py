@@ -7,9 +7,9 @@ class PlayerParty(Party):
     def __init__(self, owner:Player):
         self.logger = Logger("rpg/parties/player_party")
         
-        self.validate()
-
         super().__init__(owner)
+        
+        self.validate()
     
     def validate(self):
         if type(self.owner) != Player:

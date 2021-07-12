@@ -1,6 +1,5 @@
 from utils.logger import Logger
 from rpg.items.item import Item
-from rpg.entity import Entity
 
 
 class PassiveItem(Item):
@@ -26,7 +25,7 @@ class PassiveItem(Item):
     def get_entity(self):
         return self.entity
 
-    def set_entity(self, entity:Entity):
+    def set_entity(self, entity):
         self.entity = entity
 
     def clear(self):

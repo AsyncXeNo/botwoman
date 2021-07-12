@@ -3,10 +3,10 @@ from utils.logger import Logger
 
 
 class Player(Entity):
-    def __init__(self, name: str, maxhp: int, strength: int, mp: int, armor: int, mr: int, agility: float, stacks_name:str, abilities:list):
+    def __init__(self, name: str, player_id:str, maxhp: int, strength: int, mp: int, armor: int, mr: int, agility: float, stacks_name:str, abilities:list):
         self.logger = Logger("rpg/players/player")
 
-        super().__init__(name, maxhp, strength, mp, armor, mr, agility, stacks_name, abilities)
+        super().__init__(name, player_id, maxhp, strength, mp, armor, mr, agility, stacks_name, abilities)
 
         self.level = 1
         self.exp = 0

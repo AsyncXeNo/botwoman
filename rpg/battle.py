@@ -1,15 +1,15 @@
 from utils.id_generator import IdGenerator
 from utils.logger import Logger
-from rpg.parties.player_party import PlayerParty
-from rpg.parties.enemy_party import EnemyParty
 from rpg.turn import Turn
 
 
 class Battle(object):
-    def __init__(self, players:PlayerParty, enemies:EnemyParty):
+    def __init__(self, application, players, enemies):
         self.logger = Logger("rpg/battle")
 
         self.id = IdGenerator.generate_id()
+
+        self.application = application
         self.players = players
         self.enemies = enemies
 

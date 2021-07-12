@@ -1,15 +1,9 @@
 from utils.id_generator import IdGenerator
 from utils.logger import Logger
-from rpg.parties.player_party import PlayerParty
-from rpg.parties.enemy_party import EnemyParty
-from rpg.players.player import Player
-from rpg.enemies.enemy import Enemy
-from rpg.statuses.status import Status
-from rpg.battle import Battle
 
 
 class Turn(object):
-    def __init__(self, battle:Battle, num:int):
+    def __init__(self, battle, num:int):
         self.logger = Logger("rpg/turn")
 
         self.id = IdGenerator.generate_id()
@@ -33,6 +27,8 @@ class Turn(object):
         self.order = sorted([member.get_agility() for member in members])
 
     def start(self):
-        pass
-        
-        # yeah idk what to do here yet.
+        while len(self.order) != 0:
+            entity = self.order.pop(0)
+            entity.tick()
+            pass    
+            # yeah idk what to do here yet.

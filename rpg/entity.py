@@ -8,10 +8,12 @@ from rpg.statuses.status import Status
 
 
 class Entity(object):
-    def __init__(self, name: str, maxhp: int, strength: int, mp: int, armor: int, mr: int, agility: float, stacks_name:str, abilities:list):
+    def __init__(self, name: str, entity_id:str, maxhp: int, strength: int, mp: int, armor: int, mr: int, agility: float, stacks_name:str, abilities:list):
         self.logger = Logger("rpg/entity")
 
-        self.id = IdGenerator.generate_id()
+        self.id = entity_id
+        if not self.id:
+            self.id = IdGenerator.generate_id()
         self.name = name
 
         self.logger.log_neutral(f"Spawning an entity named {self.name} with id {self.id}.")
@@ -55,16 +57,12 @@ class Entity(object):
             self.logger.log_error("Base agility needs to be in range 0.0 - 1.0")
             raise Exception("Base agility needs to be in range 0.0 - 1.0")
 
-        for ability in self.abilities:
+        for ability in self.baseabilities:
             if type(ability) != Ability:
                 self.logger.log_error("Invalid ability.")
                 raise Exception("Invalid ability.")
 
-    def setup(self, battle):
-        if self.in_combat():
-            self.logger.log_error("Cannot setup while already in combat.")
-            raise Exception("Cannot setup while already in combat.")
-
+    def setup(self):
         self.hp = self.basemaxhp
         self.str = self.basestr
         self.mp = self.basemp
@@ -75,15 +73,20 @@ class Entity(object):
         self.statuses = []
         self.stacks = 0
 
+    def ready_for_battle(self, battle:Battle):
+        if self.in_combat():
+            self.logger.log_error("Cannot ready for battle while already in combat.")
+            raise Exception("Cannot ready for battle while already in combat.")
+
+        self.setup(battle)
+
         for ability in self.baseabilities:
             ability.set_battle(battle)
 
         for item in self.items["active"]:
             item.set_entity(self)
             item.set_battle(battle)
-
-    def ready_for_battle(self, battle):
-        self.setup(battle)
+            
         self.battle = battle
         self.incombat = True
 

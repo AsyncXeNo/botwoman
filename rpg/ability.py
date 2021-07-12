@@ -1,11 +1,9 @@
 from utils.id_generator import IdGenerator
 from utils.logger import Logger
-from rpg.entity import Entity
-from rpg.battle import Battle
 
 
 class Ability(object):
-    def __init__(self, name:str, description:str, entity:Entity, func:function, check:function):
+    def __init__(self, name:str, description:str, entity, func, check):
         self.logger = Logger("rpg/ability")
 
         self.id = IdGenerator.generate_id()
@@ -26,7 +24,7 @@ class Ability(object):
     def get_battle(self):
         return self.battle
 
-    def set_battle(self, battle:Battle):
+    def set_battle(self, battle):
         self.battle = battle
 
     def clear(self):

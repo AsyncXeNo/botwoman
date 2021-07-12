@@ -1,10 +1,9 @@
 from utils.logger import Logger
 from utils.id_generator import IdGenerator
-from rpg.entity import Entity
 
 
 class Status(object):
-    def __init__(self, name:str, turns:int, bad:bool, func:function, end_func:function):
+    def __init__(self, name:str, turns:int, bad:bool, func, end_func):
         self.logger = Logger("rpg/statuses/status")
 
         self.id = IdGenerator.generate_id()
@@ -41,7 +40,7 @@ class Status(object):
     def get_entity(self):
         return self.entity
         
-    def set_entity(self, entity:Entity):
+    def set_entity(self, entity):
         self.entity = entity   
 
     def validate(self):

@@ -1,11 +1,9 @@
 from utils.logger import Logger
 from rpg.items.item import Item
-from rpg.entity import Entity
-from rpg.battle import Battle
 
 
 class ActiveItem(Item):
-    def __init__(self, name:str, description:str, level:int, func:function, check:function):
+    def __init__(self, name:str, description:str, level:int, func, check):
         self.logger = Logger("rpg/items/active_item")
         super().__init__(name, description, level)
 
@@ -18,13 +16,13 @@ class ActiveItem(Item):
     def get_entity(self):
         return self.entity
 
-    def set_entity(self, entity:Entity):
+    def set_entity(self, entity):
         self.entity = entity
 
     def get_battle(self):
         return self.battle
 
-    def set_battle(self, battle:Battle):
+    def set_battle(self, battle):
         self.battle = battle
 
     def clear(self):
