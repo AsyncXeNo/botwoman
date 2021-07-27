@@ -69,6 +69,8 @@ class TerminalGame(commands.Cog):
                     with open(self.output_file, "r+") as f:
                         outputs = json.load(f)
                         response = outputs.pop(self.get_game_id(ctx.author))
+                        newline = response[1]
+                        response = response[0]
                         f.truncate(0)
                         f.seek(0)
                         json.dump(outputs, f, indent=4)
@@ -80,7 +82,10 @@ class TerminalGame(commands.Cog):
                     continue
                 
             self.logger.log_neutral("Got a response!")
-            await ctx.send(f"```{response}```")
+            if not newline:
+                await ctx.send(f"```{response}```")
+            else:
+                await ctx.send(f"```{response}\n{newline}```")
             
     
     @commands.command(description="register an os.")
