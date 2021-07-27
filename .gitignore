@@ -5,3 +5,4 @@ err.log
 .env
 discord.log
 data/
+cogs/no.py

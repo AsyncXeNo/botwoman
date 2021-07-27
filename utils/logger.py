@@ -57,7 +57,7 @@ class Logger():
 
     def log_neutral(self, msg):
         msg_style = self.styles['underline']
-        msg_color = self.colors['green']
+        msg_color = self.colors['cyan']
 
         loginfo = 'NORMAL'
 
