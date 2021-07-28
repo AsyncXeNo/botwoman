@@ -69,8 +69,10 @@ class TerminalGame(commands.Cog):
                     with open(self.output_file, "r+") as f:
                         outputs = json.load(f)
                         response = outputs.pop(self.get_game_id(ctx.author))
-                        newline = response[1]
-                        response = response[0]
+                        newline = response["newline"]
+                        code = response["response"]["code"]
+                        stdout = response["response"]["stdout"]
+                        stderr = response["response"]["stderr"]
                         f.truncate(0)
                         f.seek(0)
                         json.dump(outputs, f, indent=4)
@@ -82,10 +84,14 @@ class TerminalGame(commands.Cog):
                     continue
                 
             self.logger.log_neutral("Got a response!")
-            if not newline:
-                await ctx.send(f"```{response}```")
-            else:
-                await ctx.send(f"```{response}\n{newline}```")
+        
+            await ctx.send(f"```Command exited with code {code}```")
+            if stdout:
+                await ctx.send(f"```{stdout}```")
+            if stderr:
+                await ctx.send(f"```{stderr}```")
+            if newline:
+                await ctx.send(f"```{newline}```")
             
     
     @commands.command(description="register an os.")
@@ -98,8 +104,9 @@ class TerminalGame(commands.Cog):
         await ctx.send(f"{ctx.author.mention} DM me the password you want to choose for your system (or write it here, although i wouldn't recommend that). It cannot be more than 20 letters.")
 
         def check(msg):
-            return (msg.channel == ctx.channel and msg.author == ctx.author and len(msg.content) < 21) or (isinstance(msg.channel, discord.channel.DMChannel) and msg.author == ctx.author and len(msg.content) < 21)
-
+            if isinstance(msg.channel, discord.channel.DMChannel) and msg.author == ctx.author and len(msg.content) < 21:
+                return True
+            return (msg.channel == ctx.channel and msg.author == ctx.author and len(msg.content) < 21)
         
         try:
             msg = await self.client.wait_for("message", timeout=60.0, check=check)
