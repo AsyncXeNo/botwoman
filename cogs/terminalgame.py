@@ -1,3 +1,4 @@
+import requests
 import time
 import discord
 import asyncio
@@ -17,15 +18,14 @@ class TerminalGame(commands.Cog):
         self.logger = Logger("cogs/terminalgame/TerminalGame")
         
         self.client = client
-        self.output_file = os.getenv("TERMINAL_OUTPUT")
-        self.input_file = os.getenv("TERMINAL_INPUT")
+        self.server_url = 'http://127.0.0.1:5555/commands'
         self.registered = {}
         self.load_registered() 
 
     
     @commands.command(description="command")
     async def openterminal(self, ctx):
-        if not str(ctx.author.id) in self.registered:
+        if not str(ctx.author.id) in list(self.registered.keys()):
             await ctx.send("Please register first using !registeros.")
             return
         
@@ -46,67 +46,72 @@ class TerminalGame(commands.Cog):
 
             self.logger.log_neutral("Got a command!")
 
-            while True:
-                time.sleep(1)
-                try:
-                    with open(self.input_file, "r+") as f:
-                        inputs = json.load(f)
-                        inputs.append({
-                            "id": self.get_game_id(ctx.author),
-                            "cmd": msg.content
-                        })
-                        f.truncate(0)
-                        f.seek(0)
-                        json.dump(inputs, f, indent=4)
-                        self.logger.log_neutral("Added command to inputs!")
-                        break
-                except IOError:
-                    continue
+            response = requests.post(url=self.server_url, data={
+                'func': 'cmd',
+                'info': json.dumps({
+                    'id': self.get_game_id(ctx.author),
+                    'input': msg.content
+                })
+            })
 
-            while True:
-                time.sleep(1)
-                try:
-                    with open(self.output_file, "r+") as f:
-                        outputs = json.load(f)
-                        response = outputs.pop(self.get_game_id(ctx.author))
-                        newline = response["newline"]
-                        code = response["response"]["code"]
-                        stdout = response["response"]["stdout"]
-                        stderr = response["response"]["stderr"]
-                        f.truncate(0)
-                        f.seek(0)
-                        json.dump(outputs, f, indent=4)
-                        break
-                except IOError:
-                    continue
-                except KeyError:
-                    self.logger.log_error("Key error")
-                    continue
+            if response.status_code != 200:
+                self.logger.log_error(response.json())
+                await ctx.send('something went wrong.')
+                return
+            
+            response = response.json()
+            if response['response_type'] == 'error':
+                await ctx.send(response['response'])
+                return
+            elif response['response_type'] == 'success':
+                response = response['response']
                 
             self.logger.log_neutral("Got a response!")
         
-            await ctx.send(f"```Command exited with code {code}```")
-            if stdout:
-                await ctx.send(f"```{stdout}```")
-            if stderr:
-                await ctx.send(f"```{stderr}```")
-            if newline:
-                await ctx.send(f"```{newline}```")
+            if isinstance(response, str):
+                self.logger.log_error(response)
+                await ctx.send('something went wrong.')
+                return
+
+            await ctx.send(f"```\nCommand exited with code {response['exit_code']}```")
+            if response['stdout']:
+                await ctx.send(f"```\n{response['stdout']}```")
+            if response['stderr']:
+                await ctx.send(f"```\n{response['stderr']}```")
+            
+            response = requests.post(url=self.server_url, data={
+                'func': 'new_line',
+                'info': json.dumps({
+                    'id': self.get_game_id(ctx.author)
+                })
+            })
+
+            if response.status_code != 200:
+                self.logger.log_error(response.json())
+                await ctx.send('something went wrong.')
+                return
+            
+            response = response.json()
+            if response['response_type'] == 'error':
+                await ctx.send(response['response'])
+                return
+            elif response['response_type'] == 'success':
+                await ctx.send(f'```{response["response"]}```')
+
             
     
     @commands.command(description="register an os.")
     async def registeros(self, ctx):
-        if str(ctx.author.id) in self.registered:
+        if str(ctx.author.id) in list(self.registered.keys()):
             await ctx.send("You are already registered for an OS.")
             return
 
-        tempid = IdGenerator.generate_id()
-        await ctx.send(f"{ctx.author.mention} DM me the password you want to choose for your system (or write it here, although i wouldn't recommend that). It cannot be more than 20 letters.")
+        await ctx.send(f"{ctx.author.mention} DM me the password that you want to choose for your system (or write it here, although i wouldn't recommend that). It cannot be more than 20 letters.")
 
         def check(msg):
             if isinstance(msg.channel, discord.channel.DMChannel) and msg.author == ctx.author and len(msg.content) < 21:
                 return True
-            return (msg.channel == ctx.channel and msg.author == ctx.author and len(msg.content) < 21)
+            return (msg.channel == ctx.channel and msg.author == ctx.author)
         
         try:
             msg = await self.client.wait_for("message", timeout=60.0, check=check)
@@ -114,41 +119,28 @@ class TerminalGame(commands.Cog):
             await ctx.send(f"{ctx.author.mention} You didn't reply with a password.")
             return
 
-        while True:
-            time.sleep(1)
-            try:
-                with open(self.input_file, "r+") as f:
-                    inputs = json.load(f)
-                    inputs.append({
-                        "tempid":tempid,
-                        "username": ctx.author.name,
-                        "password": msg.content,
-                    })
-                    f.truncate(0)
-                    f.seek(0)
-                    json.dump(inputs, f, indent=4)
-                    break
-            except IOError:
-                continue
+        response = requests.post(url=self.server_url, data={
+            'func': 'new',
+            'info': json.dumps({
+                'temp_id': ctx.author.id,
+                'username': ctx.author.name,
+                'password': msg.content
+            })
+        })
 
-        while True:
-            time.sleep(1)
-            try:
-                with open(self.output_file, "r+") as f:
-                    outputs = json.load(f)
-                    newid = outputs[tempid]
-                    self.register(str(ctx.author.id) , newid)
-                    await ctx.send(f"Registered {ctx.author.mention}")
-                    outputs.pop(tempid)
-                    f.truncate(0)
-                    f.seek(0)
-                    json.dump(outputs, f, indent=4)
-                    break
-            except IOError:
-                continue
-            except KeyError:
-                self.logger.log_error("Key error")
-                continue
+        if response.status_code != 200:
+            self.logger.log_error(response.json())
+            await ctx.send('something went wrong.')
+            return
+        
+        response = response.json()
+        if response['response_type'] == 'error':
+            await ctx.send(response['response'])
+            return
+        elif response['response_type'] == 'success':
+            self.register(str(ctx.author.id), response['response'])
+            await ctx.send('Registered successfully.')
+            return
 
     def get_game_id(self, user):
         return self.registered[str(user.id)]
