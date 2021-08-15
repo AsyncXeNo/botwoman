@@ -25,7 +25,7 @@ class Debug(commands.Cog):
             await self.DEBUGCHANNEL.send('Initializing...')
             self.message = await self.DEBUGCHANNEL.fetch_message(self.DEBUGCHANNEL.last_message_id)
         
-        with open('data/debug.log', 'r') as f:
+        with open('logs/debug.log', 'r') as f:
             logs = f.read()
         if self.message.content.strip('```') != logs: await self.message.edit(content=f'```{logs}```')
 
