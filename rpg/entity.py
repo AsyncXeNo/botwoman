@@ -13,7 +13,7 @@ class Entity(object):
 
         self.id = entity_id
         if not self.id:
-            self.id = IdGenerator.generate_id()
+            self.id = f'{self.__class__.__name__}-{IdGenerator.generate_id()}'
         self.name = name
 
         self.logger.log_neutral(f"Spawning an entity named {self.name} with id {self.id}.")

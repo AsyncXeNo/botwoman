@@ -1,15 +1,14 @@
-import discord
 import json
-from discord import embeds
 from discord.ext import commands
-from utils.logger import Logger
+from utils.my_logging import get_logger
+
+
+logger = get_logger(__name__)
 
 
 class Nae(commands.Cog):
     def __init__(self, client):
-        self.logger = Logger("cogs/nae")
         self.client = client
-        self.logger.log_neutral("Loaded nae.")
 
     @commands.Cog.listener()
     async def on_message(self, message):

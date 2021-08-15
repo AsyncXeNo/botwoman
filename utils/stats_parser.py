@@ -1,7 +1,5 @@
 import random
 
-from utils.logger import Logger
-
 
 class StatsParser(object):
     @staticmethod

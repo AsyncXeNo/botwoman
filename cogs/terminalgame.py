@@ -6,17 +6,16 @@ import json
 import os
 
 from discord.ext import commands
-from utils.logger import Logger
-from utils.id_generator import IdGenerator
+from utils.my_logging import get_logger
 from dotenv import load_dotenv
 
+
 load_dotenv()
+logger = get_logger(__name__)
 
 
 class TerminalGame(commands.Cog):
     def __init__(self, client):
-        self.logger = Logger("cogs/terminalgame/TerminalGame")
-        
         self.client = client
         self.server_url = 'http://127.0.0.1:5555/commands'
         self.registered = {}
@@ -33,7 +32,7 @@ class TerminalGame(commands.Cog):
         def check(msg):
             return msg.channel == ctx.channel and msg.author == ctx.author
         while True:
-            self.logger.log_neutral("Waiting for command..")
+            logger.info("Waiting for command..")
             try:
                 msg = await self.client.wait_for("message", timeout=60.0, check=check)
             except asyncio.TimeoutError:
@@ -44,7 +43,7 @@ class TerminalGame(commands.Cog):
                 await ctx.send("Exiting terminal.")
                 return
 
-            self.logger.log_neutral("Got a command!")
+            logger.info("Got a command!")
 
             response = requests.post(url=self.server_url, data={
                 'func': 'cmd',
@@ -55,7 +54,7 @@ class TerminalGame(commands.Cog):
             })
 
             if response.status_code != 200:
-                self.logger.log_error(response.json())
+                logger.error(response.json())
                 await ctx.send('something went wrong.')
                 return
             
@@ -66,10 +65,10 @@ class TerminalGame(commands.Cog):
             elif response['response_type'] == 'success':
                 response = response['response']
                 
-            self.logger.log_neutral("Got a response!")
+            logger.info("Got a response!")
         
             if isinstance(response, str):
-                self.logger.log_error(response)
+                logger.error(response)
                 await ctx.send('something went wrong.')
                 return
 
@@ -87,7 +86,7 @@ class TerminalGame(commands.Cog):
             })
 
             if response.status_code != 200:
-                self.logger.log_error(response.json())
+                logger.error(response.json())
                 await ctx.send('something went wrong.')
                 return
             
@@ -129,7 +128,7 @@ class TerminalGame(commands.Cog):
         })
 
         if response.status_code != 200:
-            self.logger.log_error(response.json())
+            logger.error(response.json())
             await ctx.send('something went wrong.')
             return
         

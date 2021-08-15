@@ -2,8 +2,6 @@ import string
 import random
 import json
 
-from utils.logger import Logger
-
 
 class IdGenerator(object):
     @staticmethod

@@ -1,4 +1,3 @@
-from utils.logger import Logger
 from rpg.statuses.status import Status
 from rpg.entity import Entity
 

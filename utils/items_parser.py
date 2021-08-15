@@ -4,7 +4,6 @@ from rpg.items.active_item import ActiveItem
 from utils.statuses_parser import StatusesParser
 from rpg.battle import Battle
 from rpg.entity import Entity
-from utils.logger import Logger
 
 
 class ItemsParser(object):

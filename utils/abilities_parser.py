@@ -3,7 +3,6 @@ from rpg.ability import Ability
 from utils.statuses_parser import StatusesParser
 from rpg.battle import Battle
 from rpg.entity import Entity
-from utils.logger import Logger
 
 
 class AbilitiesParser(object):

@@ -7,16 +7,16 @@ from discord.ext import commands
 from google_images_search import GoogleImagesSearch
 from better_profanity import profanity
 from dotenv import load_dotenv
-from utils.logger import Logger
+from utils.my_logging import get_logger
+
 
 wikipedia.set_lang("en")
-
 load_dotenv()
+logger = get_logger(__name__)
 
 
 class Utils(commands.Cog):
     def __init__(self, client):
-        self.logger = Logger("cogs/utils")
         self.client = client
 
         self.gis_api_key = os.getenv("GIS_API_KEY")
@@ -24,22 +24,9 @@ class Utils(commands.Cog):
 
         self.gis = GoogleImagesSearch(self.gis_api_key, self.gis_project_cx)
 
-
-        self.custom_nsfw = [
-            "gräfenberg spot",
-            "shotacon",
-            "shota",
-            "male genitalia",
-            "female genitalia",
-            "cyclopia",
-            "rule34",
-            "rule 34",
-            "nsfw"
-        ]
+        self.custom_nsfw = []
 
         self.imgs_path = "data/imgs/"
-
-        self.logger.log_neutral("Loaded utils.")
 
     @commands.command(description="Searches wikipedia for the given query.")
     async def wiki(self, ctx, *args):
