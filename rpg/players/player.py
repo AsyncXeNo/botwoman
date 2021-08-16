@@ -1,11 +1,12 @@
 from rpg.entity import Entity
-from utils.logger import Logger
+from utils.my_logging import get_logger
+
+
+logger = get_logger(__name__)
 
 
 class Player(Entity):
     def __init__(self, name: str, player_id:str, maxhp: int, strength: int, mp: int, armor: int, mr: int, agility: float, stacks_name:str, abilities:list):
-        self.logger = Logger("rpg/players/player")
-
         super().__init__(name, player_id, maxhp, strength, mp, armor, mr, agility, stacks_name, abilities)
 
         self.level = 1
@@ -20,7 +21,7 @@ class Player(Entity):
 
     def level_up(self):
         if self.get_level() == self.max_lv:
-            self.logger.log_neutral(f"{self.get_name()} is already max level.")
+            logger.warn(f"{self.get_name()} is already max level.")
             return f"{self.get_name()} is already max level."
 
         maxhp = self.basemaxhp

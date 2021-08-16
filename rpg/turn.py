@@ -1,12 +1,14 @@
 from utils.id_generator import IdGenerator
-from utils.logger import Logger
+from utils.my_logging import get_logger
+
+
+logger = get_logger(__name__)
 
 
 class Turn(object):
     def __init__(self, battle, num:int):
-        self.logger = Logger("rpg/turn")
-
-        self.id = IdGenerator.generate_id()
+        self.ID = f'{self.__class__.__name__}-{IdGenerator.generate_id()}'
+        logger.debug(f'Starting Turn with id {self.ID}.')
         self.battle = battle
         self.num = num
 
@@ -14,7 +16,7 @@ class Turn(object):
         self.start()
 
     def get_id(self):
-        return self.id
+        return self.ID
 
     def get_num(self):
         return self.num

@@ -1,22 +1,10 @@
-2021-08-15 10:34:31 - client - INFO - client : 34 - Loaded debug.
-2021-08-15 10:34:31 - client - INFO - client : 34 - Loaded nae.
-2021-08-15 10:34:31 - client - INFO - client : 34 - Loaded no.
-2021-08-15 10:34:31 - client - INFO - client : 34 - Loaded replies.
-2021-08-15 10:34:31 - client - INFO - client : 34 - Loaded rpg.
-2021-08-15 10:34:31 - client - INFO - client : 34 - Loaded utils.
-2021-08-15 10:34:31 - client - INFO - client : 34 - Loaded basic_utils.
-2021-08-15 10:34:31 - client - INFO - client : 34 - Loaded terminalgame.
-2021-08-15 10:34:35 - client - INFO - client : 44 - Logged in as Botwoman#6519!
-2021-08-15 10:35:10 - googleapiclient.discovery - DEBUG - discovery : 371 - URL being requested: GET https://www.googleapis.com/discovery/v1/apis/customsearch/v1/rest?key=AIzaSyC5RtmhCHFNEV3tivvGqbLTZJCDG9UFb64
-2021-08-15 10:35:11 - googleapiclient.discovery - DEBUG - discovery : 1113 - URL being requested: GET https://customsearch.googleapis.com/customsearch/v1?cx=210d1a73832d25c94&q=obama&searchType=image&num=1&start=1&imgType=photo&imgSize=MEDIUM&fileType=jpg&safe=off&imgDominantColor=imgDominantColorUndefined&rights=rightsUndefined&key=AIzaSyC5RtmhCHFNEV3tivvGqbLTZJCDG9UFb64&alt=json
-2021-08-15 10:35:13 - urllib3.connectionpool - DEBUG - connectionpool : 971 - Starting new HTTPS connection (1): upload.wikimedia.org:443
-2021-08-15 10:35:13 - urllib3.connectionpool - DEBUG - connectionpool : 452 - https://upload.wikimedia.org:443 "HEAD /wikipedia/commons/thumb/8/8d/President_Barack_Obama.jpg/220px-President_Barack_Obama.jpg HTTP/1.1" 200 0
-2021-08-15 10:35:13 - urllib3.connectionpool - DEBUG - connectionpool : 971 - Starting new HTTPS connection (1): upload.wikimedia.org:443
-2021-08-15 10:35:13 - urllib3.connectionpool - DEBUG - connectionpool : 452 - https://upload.wikimedia.org:443 "GET /wikipedia/commons/thumb/8/8d/President_Barack_Obama.jpg/220px-President_Barack_Obama.jpg HTTP/1.1" 200 22335
-2021-08-15 10:35:14 - PIL.TiffImagePlugin - DEBUG - TiffImagePlugin : 807 - tag: ImageDescription (270) - type: string (2) Tag Location: 22 - Data Location: 98 - value: <table: 178 bytes>
-2021-08-15 10:35:14 - PIL.TiffImagePlugin - DEBUG - TiffImagePlugin : 807 - tag: XResolution (282) - type: rational (5) Tag Location: 34 - Data Location: 276 - value: b'\x00\x00\x00H\x00\x00\x00\x01'
-2021-08-15 10:35:14 - PIL.TiffImagePlugin - DEBUG - TiffImagePlugin : 807 - tag: YResolution (283) - type: rational (5) Tag Location: 46 - Data Location: 284 - value: b'\x00\x00\x00H\x00\x00\x00\x01'
-2021-08-15 10:35:14 - PIL.TiffImagePlugin - DEBUG - TiffImagePlugin : 807 - tag: ResolutionUnit (296) - type: short (3) - value: b'\x00\x02'
-2021-08-15 10:35:14 - PIL.TiffImagePlugin - DEBUG - TiffImagePlugin : 807 - tag: Artist (315) - type: string (2) Tag Location: 70 - Data Location: 292 - value: b'Pete Souza\x00'
-2021-08-15 10:35:14 - PIL.TiffImagePlugin - DEBUG - TiffImagePlugin : 807 - tag: YCbCrPositioning (531) - type: short (3) - value: b'\x00\x01'
-2021-08-15 10:35:14 - PIL.TiffImagePlugin - DEBUG - TiffImagePlugin : 807 - tag: Copyright (33432) - type: string (2) Tag Location: 94 - Data Location: 304 - value: <table: 540 bytes>
+2021-08-16 17:35:45 - client - INFO - client : 34 - Loaded debug.
+2021-08-16 17:35:45 - client - INFO - client : 34 - Loaded nae.
+2021-08-16 17:35:45 - client - INFO - client : 34 - Loaded no.
+2021-08-16 17:35:45 - client - INFO - client : 34 - Loaded replies.
+2021-08-16 17:35:45 - cogs.rpg - INFO - rpg : 121 - Loading registered players from player_info.pickle.
+2021-08-16 17:35:45 - client - INFO - client : 34 - Loaded rpg.
+2021-08-16 17:35:45 - client - INFO - client : 34 - Loaded utils.
+2021-08-16 17:35:45 - client - INFO - client : 34 - Loaded basic_utils.
+2021-08-16 17:35:45 - client - INFO - client : 34 - Loaded terminalgame.
+2021-08-16 17:35:49 - client - INFO - client : 44 - Logged in as Botwoman#6519!

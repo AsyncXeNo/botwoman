@@ -1,19 +1,19 @@
 from utils.id_generator import IdGenerator
-from utils.logger import Logger
+from utils.my_logging import get_logger
 from rpg.turn import Turn
+
+
+logger = get_logger(__name__)
 
 
 class Battle(object):
     def __init__(self, application, players, enemies):
-        self.logger = Logger("rpg/battle")
-
-        self.id = IdGenerator.generate_id()
-
+        self.ID = f'{self.__class__.__name__}-{IdGenerator.generate_id()}'
         self.application = application
         self.players = players
         self.enemies = enemies
 
-        self.logger.log_neutral(f"Starting a battle between {self.players.get_owner().get_name()}'s party and {self.enemies.get_owner().get_name()}'s party")
+        logger.info(f"Starting a battle between {self.players.get_owner().get_name()}'s party and {self.enemies.get_owner().get_name()}'s party.")
 
         self.ready_for_battle()
         self.start_battle()

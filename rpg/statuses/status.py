@@ -1,12 +1,13 @@
-from utils.logger import Logger
+from utils.my_logging import get_logger
 from utils.id_generator import IdGenerator
+
+
+logger = get_logger(__name__)
 
 
 class Status(object):
     def __init__(self, name:str, turns:int, bad:bool, func, end_func):
-        self.logger = Logger("rpg/statuses/status")
-
-        self.id = IdGenerator.generate_id()
+        self.ID = f'{self.__class__.__name__}-{IdGenerator.generate_id()}'
         self.name = name
         self.turns = turns
         self.bad = bad

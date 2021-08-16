@@ -15,15 +15,14 @@ class Debug(commands.Cog):
         self.client = client
         self.started = False
 
-    @tasks.loop(seconds=0.5)
+    @tasks.loop(seconds=0.1)
     async def post_log(self):
         self.DEBUGCHANNEL = self.client.get_channel(851344906185343016)
         counter = 0
         async for _ in self.DEBUGCHANNEL.history(limit=3):
             counter += 1
         if counter < 1:
-            await self.DEBUGCHANNEL.send('Initializing...')
-            self.message = await self.DEBUGCHANNEL.fetch_message(self.DEBUGCHANNEL.last_message_id)
+            self.message = await self.DEBUGCHANNEL.send('Initializing...')
         
         with open('logs/debug.log', 'r') as f:
             logs = f.read()

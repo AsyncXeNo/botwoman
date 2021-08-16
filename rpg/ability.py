@@ -1,12 +1,13 @@
 from utils.id_generator import IdGenerator
-from utils.logger import Logger
+from utils.my_logging import get_logger
+
+
+logger = get_logger(__name__)
 
 
 class Ability(object):
     def __init__(self, name:str, description:str, entity, func, check):
-        self.logger = Logger("rpg/ability")
-
-        self.id = IdGenerator.generate_id()
+        self.ID = f'{self.__class__.__name__}-{IdGenerator.generate_id()}'
         self.name = name
         self.description = description
         self.entity = entity
@@ -32,18 +33,18 @@ class Ability(object):
 
     def can_use(self):
         if not self.battle:
-            self.logger.log_error("Checking if you can use an ability when not in combat?")
+            logger.error("Checking if you can use an ability when not in combat?")
             raise Exception("Checking if you can use an ability when not in combat?")
 
         return self.check(self.entity)
 
     def use(self):
         if not self.check(self.entity):
-            self.logger.log_error("How did it bypass the first check? You cannot use this ability right now.")
+            logger.error("How did it bypass the first check? You cannot use this ability right now.")
             raise Exception("How did it bypass the first check? You cannot use this ability right now.")
 
         if not self.battle:
-            self.logger.log_error("Using an ability when not in combat?")
+            logger.error("Using an ability when not in combat?")
             raise Exception("Using an ability when not in combat?")
             
         self.func(self.entity, self.battle)

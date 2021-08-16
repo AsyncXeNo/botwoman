@@ -1,18 +1,19 @@
-from utils.logger import Logger
+from utils.my_logging import get_logger
 from utils.id_generator import IdGenerator
 from rpg.entity import Entity
 
 
+logger = get_logger(__name__)
+
+
 class Party(object):
     def __init__(self, owner:Entity):
-        self.logger = Logger("rpg/parties/party")
-        
-        self.id = IdGenerator.generate_id()
+        self.ID = f'{self.__class__.__name__}-{IdGenerator.generate_id()}'
         self.owner = owner
 
         self.members = [self.owner]
         
-        self.logger.log_neutral(f"Created a party with id {self.id}.")
+        logger.debug(f"Created a party with id {self.ID}.")
 
     def get_id(self):
         return self.id
@@ -33,4 +34,4 @@ class Party(object):
             if member.get_id() == member_id:
                 return member
 
-        self.logger.log_alert(f"Member with id {member_id} not found in members.")
+        logger.warn(f"Member with id {member_id} not found in members.")

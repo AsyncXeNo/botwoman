@@ -1,10 +1,12 @@
-from utils.logger import Logger
+from utils.my_logging import get_logger
 from rpg.items.item import Item
+
+
+logger = get_logger(__name__)
 
 
 class ActiveItem(Item):
     def __init__(self, name:str, description:str, level:int, func, check):
-        self.logger = Logger("rpg/items/active_item")
         super().__init__(name, description, level)
 
         self.func = func
@@ -31,21 +33,21 @@ class ActiveItem(Item):
 
     def can_use(self):
         if not self.battle:
-            self.logger.log_error("Checking if you can use an item when not in combat?")
+            logger.error("Checking if you can use an item when not in combat?")
             raise Exception("Checking if you can use an item when not in combat?")
         self.check(self.entity)
 
     def use(self):
         if not self.check(self.entity):
-            self.logger.log_error("How did it bypass the first check? You cannot use this item right now.")
+            logger.error("How did it bypass the first check? You cannot use this item right now.")
             raise Exception("How did it bypass the first check? You cannot use this item right now.")
 
         if not self.entity:
-            self.logger.log_error(f"Attempt to use {self.name}'s active when it has no entity assigned. Id- {self.id}")
+            logger.error(f"Attempt to use {self.name}'s active when it has no entity assigned. Id- {self.id}")
             raise Exception(f"Attempt to use {self.name}'s active when it has no entity assigned. Id- {self.id}")
         
         if not self.battle:
-            self.logger.log_error(f"Attempt to use {self.name}'s active when it has no battle assigned. Id- {self.id}")
+            logger.error(f"Attempt to use {self.name}'s active when it has no battle assigned. Id- {self.id}")
             raise Exception(f"Attempt to use {self.name}'s active when it has no battle assigned. Id- {self.id}")
 
         self.func(self.entity, self.battle)

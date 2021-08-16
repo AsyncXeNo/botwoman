@@ -19,7 +19,7 @@ class Nae(commands.Cog):
         with open('data/message_logs.json', 'r') as f:
             message_logs = json.load(f)
 
-        message_data = {'author': message.author.name, 'message': message.content, 'channel': message.channel.name, 'atachments': [attachment.url for attachment in message.attachments], "embeds": [embed.url for embed in message.embeds], 'datetime': message.created_at.__str__()}
+        message_data = {'author': message.author.name, 'message': message.content, 'channel': message.channel.name, 'atachments': [attachment.url for attachment in message.attachments], "embeds": [str(embed.url) for embed in message.embeds], 'datetime': message.created_at.__str__()}
 
         message_logs.append(message_data) 
 

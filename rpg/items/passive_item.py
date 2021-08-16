@@ -1,11 +1,12 @@
-from utils.logger import Logger
+from utils.my_logging import get_logger
 from rpg.items.item import Item
+
+
+logger = get_logger(__name__)
 
 
 class PassiveItem(Item):
     def __init__(self, name:str, description:str, level:str, permanent:bool, maxhp: int, strength: int, mp: int, armor: int, mr: int, agility: float):
-        self.logger = Logger("rpg/items/passive_item")
-
         super().__init__(name, description, level)
 
         self.permanent = permanent
@@ -30,6 +31,6 @@ class PassiveItem(Item):
 
     def clear(self):
         if self.is_permanent():
-            self.logger.log_alert(f"This is a permanent item and hence cannot be removed. Name - {self.get_name()} Id - {self.get_id()}")
+            logger.warn(f"This is a permanent item and hence cannot be removed. Name - {self.get_name()} Id - {self.get_id()}")
             return
         self.entity = None

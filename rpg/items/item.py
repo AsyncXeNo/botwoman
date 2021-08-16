@@ -1,12 +1,13 @@
-from utils.logger import Logger
+from utils.my_logging import get_logger
 from utils.id_generator import IdGenerator
+
+
+logger = get_logger(__name__)
 
 
 class Item(object):
     def __init__(self, name:str, description:str, level:int):
-        self.logger = Logger("rpg/items/item")
-
-        self.id = IdGenerator.generate_id()
+        self.ID = f'{self.__class__.__name__}-{IdGenerator.generate_id()}'
         self.name = name
         self.description = description
         self.level = level

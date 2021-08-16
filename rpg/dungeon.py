@@ -1,6 +1,9 @@
-from utils.logger import Logger
+from utils.my_logging import get_logger
+
+
+logger = get_logger(__name__)
 
 
 class Dungeon(object):
     def __init__(self):
-        self.logger = Logger("rpg/dungeon") 
+        pass
